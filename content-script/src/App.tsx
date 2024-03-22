@@ -1,7 +1,7 @@
 /// <reference types="chrome" />
 /// <reference types="vite-plugin-svgr/client" />
 // @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const TextSelectionComponent = () => {
   const [selectedText, setSelectedText] = useState('');
@@ -45,15 +45,16 @@ const TextSelectionComponent = () => {
       {showButton && (
         <button
           id="text-selection-button"
+          className='logo-button '
           style={{
+            backgroundImage: `url(${chrome.runtime.getURL('images/logoT.png')})`,
             position: 'absolute',
-            left: `${buttonPosition.x}px`,
-            top: `${buttonPosition.y}px`,
-            zIndex: 2147483647,
+            left: `${buttonPosition.x+15}px`,
+            top: `${buttonPosition.y+15}px`,
+            zIndex: 2147483648,
           }}
           onClick={handleButtonClick}
         >
-          Show Text
         </button>
       )}
 

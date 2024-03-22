@@ -14,5 +14,16 @@
       "js": ["content-script/src/main.tsx"],
       "media": []
     }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "images/logoT.png"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
   ]
+  
 }

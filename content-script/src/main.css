@@ -11,3 +11,25 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+
+.logo-button {
+  background-color: transparent;
+  border: none;
+  width: 40px;
+  height: 40px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  display: inline-block;
+  padding: 0;
+  outline: none;
+  transition: transform 0.3s ease;
+}
+
+
+
+.logo-button:hover {
+  transform: scale(1.1); /* Slightly scale up the logo/button */
+}
