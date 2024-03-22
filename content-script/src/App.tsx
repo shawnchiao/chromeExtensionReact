@@ -10,6 +10,10 @@ const TextSelectionComponent = () => {
   const [showModal, setShowModal] = useState(false);
 
   const handleMouseUp = (e) => {
+    if (e.target.id === 'text-selection-button' || e.target.closest('#text-selection-modal')) {
+      // Early return to avoid hiding the button when it's clicked or interacting with the modal
+      return;
+    }
     const text = window.getSelection().toString().trim();
     console.log('text', text);
     if (text && document.getElementById('text-selection-button') === null) {
