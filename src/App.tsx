@@ -3,7 +3,7 @@
 
 import React from 'react';
 import './PopupComponent.css';
-
+import LoginButton from './LoginButton';
 const PopupComponent = () => {
   return (
     <div className="popup-container">
@@ -14,7 +14,7 @@ const PopupComponent = () => {
       <div className="popup-content">
         <section className="pro-section">
           <p>As a Pro user, you can translate full pages with a single click.</p>
-          <button className="login-button">Log in</button>
+          <LoginButton />
           <p>Not a Pro user yet? <a href="/register" className="try-for-free-link">Try it for free</a></p>
         </section>
         <section className="setup-section">
