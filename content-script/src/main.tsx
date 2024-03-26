@@ -7,7 +7,7 @@ const body = document.querySelector("body");
 
 const app = document.createElement("div");
 
-app.id = "root";
+app.id = "lingofloatRoot";
 
 // Make sure the element that you want to mount the app to has loaded. You can
 // also use `append` or insert the app using another method:
@@ -19,10 +19,10 @@ if (body) {
   body.prepend(app);
 }
 
-const container = document.getElementById("root");
-const root = createRoot(container!);
+const container = document.getElementById("lingofloatRoot");
+const lingofloatRoot = createRoot(container!);
 
-root.render(
+lingofloatRoot.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
