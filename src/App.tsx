@@ -5,30 +5,43 @@ import './PopupComponent.css';
 import LoginButton from './LoginButton';
 import { useAuth0 } from "@auth0/auth0-react"
 const PopupComponent = () => {
-  const { isAuthenticated, isLoading, user } = useAuth0();
+  const { isAuthenticated, isLoading, user, logout } = useAuth0();
   const [localAuthState, setLocalAuthState] = useState(false);
   
   useEffect(() => {
     // Check if the authentication state is already stored in local storage
     chrome.storage.local.get(['isAuthenticated'], function(result) {
       if (result.isAuthenticated !== undefined) {
+        // console.log('Auth state is retrieved from local storage.');
+        // console.log("user is: ", user);
+        // console.log("local is: ", result.isAuthenticated);
         setLocalAuthState(result.isAuthenticated);
       } else {
         // If not stored, set the initial value from isAuthenticated
+        console.log('Auth state is not stored in local storage.');
         setLocalAuthState(isAuthenticated);
-        chrome.storage.local.set({ isAuthenticated: isAuthenticated }, function() {
-          console.log('Auth state is stored locally.');
-        });
       }
+    });
+  }, []);
+
+  useEffect(() => {
+    // Update the localAuthState and local storage when isAuthenticated changes
+    setLocalAuthState(isAuthenticated);
+    chrome.storage.local.set({ isAuthenticated: isAuthenticated }, function() {
+      // console.log('Auth state is updated in local storage.');
     });
   }, [isAuthenticated]);
 
-  useEffect(() => {
-    // Update the local storage when the localAuthState changes
-    chrome.storage.local.set({ isAuthenticated: localAuthState }, function() {
-      console.log('Auth state is updated in local storage.');
+  const handleLogout = () => {
+    // Set the localAuthState to false before calling the logout function
+    setLocalAuthState(false);
+    chrome.storage.local.set({ isAuthenticated: false }, function() {
+      // console.log('Auth state is updated in local storage before logout.');
+      logout({ logoutParams: { returnTo: window.location.origin + "/index.html" } });
     });
-  }, [localAuthState]);
+  };
+
+  console.log("localAuthState is: ", localAuthState);
   return (
     <div className="popup-container">
       <header className="popup-header">
@@ -39,6 +52,7 @@ const PopupComponent = () => {
         <section className="pro-section">
           <p>As a Pro user, you can translate full pages with a single click.</p>
           <LoginButton />
+          <button onClick={handleLogout}>Log out</button>
           <p>{localAuthState? "has logged in": "no logged in yet"}</p>
           <p>Not a Pro user yet? <a href="/register" className="try-for-free-link">Try it for free</a></p>
         </section>
@@ -67,3 +81,7 @@ const PopupComponent = () => {
 }
 
 export default PopupComponent;
+
+
+
+
