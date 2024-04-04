@@ -10,7 +10,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     if (message.type === 'AUTH_STATE_CHANGED') {
         // Update the authentication state in chrome.storage.local
-        chrome.storage.local.set({ isAuthenticated: message.isAuthenticated }, () => {
+        console.log('AUTH_STATE_CHANGED message', message);
+        chrome.storage.local.set({ isAuthenticated: message.isAuthenticated, user: message.user }, () => {
           console.log('Authentication state updated in local storage with: ', message.isAuthenticated);
     
           // Optionally, send a response back to the sender if needed

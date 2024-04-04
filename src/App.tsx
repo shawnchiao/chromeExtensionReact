@@ -16,12 +16,12 @@ const PopupComponent = () => {
         // console.log("user is: ", user);
         // console.log("local is: ", result.isAuthenticated);
         setLocalAuthState(result.isAuthenticated);
-        chrome.runtime.sendMessage({ type: 'AUTH_STATE_CHANGED', isAuthenticated:result.isAuthenticated });
+        chrome.runtime.sendMessage({ type: 'AUTH_STATE_CHANGED', isAuthenticated:result.isAuthenticated, user: user});
       } else {
         // If not stored, set the initial value from isAuthenticated
         console.log('Auth state is not stored in local storage.');
         setLocalAuthState(isAuthenticated);
-        chrome.runtime.sendMessage({ type: 'AUTH_STATE_CHANGED', isAuthenticated});
+        chrome.runtime.sendMessage({ type: 'AUTH_STATE_CHANGED', isAuthenticated, user: user});
       }
     });
   }, []);
@@ -30,14 +30,14 @@ const PopupComponent = () => {
     // Update the localAuthState and local storage when isAuthenticated changes
     setLocalAuthState(isAuthenticated);
 
-    chrome.runtime.sendMessage({ type: 'AUTH_STATE_CHANGED', isAuthenticated });
+    chrome.runtime.sendMessage({ type: 'AUTH_STATE_CHANGED', isAuthenticated, user: user});
   }, [isAuthenticated]);
 
   const handleLogout = () => {
     // Set the localAuthState to false before calling the logout function
     setLocalAuthState(false);
     logout({ logoutParams: { returnTo: window.location.origin + "/index.html" } });
-    chrome.runtime.sendMessage({ type: 'AUTH_STATE_CHANGED', isAuthenticated: false});
+    chrome.runtime.sendMessage({ type: 'AUTH_STATE_CHANGED', isAuthenticated: false, user: null});
   };
 
   console.log("localAuthState is: ", localAuthState);

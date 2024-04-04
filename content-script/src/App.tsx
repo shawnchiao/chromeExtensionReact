@@ -22,7 +22,7 @@ function getFullSentence(selection) {
 
 
 const TextSelectionComponent = () => {
-  const [storedValue, setStoredValue] = useState('');
+  const [user, setUser] = useState();
   const [selectedText, setSelectedText] = useState('');
   const [contextSentence, setContextSentence] = useState('');
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
@@ -32,10 +32,10 @@ const TextSelectionComponent = () => {
   useEffect(() => {
     // Function to fetch and update the component state with the stored value
     const fetchStoredValue = () => {
-      chrome.storage.local.get(['isAuthenticated'], function(result) {
+      chrome.storage.local.get(['isAuthenticated', "user"], function(result) {
         console.log('result', result);
       
-          setStoredValue(result.isAuthenticated? "logged in" : "not logged in"); // Update state with the stored value
+        setUser(result.user); // Update state with the stored value
 
       });
     };
@@ -43,10 +43,10 @@ const TextSelectionComponent = () => {
     fetchStoredValue();
 
     const handleStorageChange = (changes, namespace) => {
-      if (namespace === 'local' && changes.isAuthenticated) {
+      if (namespace === 'local' && changes.user) {
         // Check if the specific key we care about was changed
-        const newValue = changes.isAuthenticated.newValue;
-        setStoredValue(newValue? "logged in" : "not logged in"); // Update state with the new value
+        const newValue = changes.user.newValue;
+        setUser(newValue); // Update state with the new value
       }
     };
 
@@ -128,7 +128,7 @@ const TextSelectionComponent = () => {
             zIndex: 2147483647,
           }}
         > 
-          <h1>{storedValue}</h1>
+          <h1>{user?user.given_name : "not logged"}</h1>
           <p>{selectedText}</p>
           <p>{contextSentence}</p>
           <button onClick={() => setShowModal(false)}>Close</button>
