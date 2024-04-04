@@ -22,11 +22,45 @@ function getFullSentence(selection) {
 
 
 const TextSelectionComponent = () => {
+  const [storedValue, setStoredValue] = useState('');
   const [selectedText, setSelectedText] = useState('');
   const [contextSentence, setContextSentence] = useState('');
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [showButton, setShowButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    // Function to fetch and update the component state with the stored value
+    const fetchStoredValue = () => {
+      chrome.storage.local.get(['isAuthenticated'], function(result) {
+        console.log('result', result);
+      
+          setStoredValue(result.isAuthenticated? "logged in" : "not logged in"); // Update state with the stored value
+
+      });
+    };
+
+    fetchStoredValue();
+
+    const handleStorageChange = (changes, namespace) => {
+      if (namespace === 'local' && changes.isAuthenticated) {
+        // Check if the specific key we care about was changed
+        const newValue = changes.isAuthenticated.newValue;
+        setStoredValue(newValue? "logged in" : "not logged in"); // Update state with the new value
+      }
+    };
+
+    // Add the event listener for storage changes
+    chrome.storage.onChanged.addListener(handleStorageChange);
+
+    // Cleanup function to remove the event listener when the component unmounts
+    return () => {
+      chrome.storage.onChanged.removeListener(handleStorageChange);
+    };
+
+  }, []);
+
+
 
   const handleMouseUp = (e) => {
     if (e.target.id === 'text-selection-button' || e.target.closest('#text-selection-modal')) {
@@ -93,7 +127,8 @@ const TextSelectionComponent = () => {
             border: '1px solid black',
             zIndex: 2147483647,
           }}
-        >
+        > 
+          <h1>{storedValue}</h1>
           <p>{selectedText}</p>
           <p>{contextSentence}</p>
           <button onClick={() => setShowModal(false)}>Close</button>
