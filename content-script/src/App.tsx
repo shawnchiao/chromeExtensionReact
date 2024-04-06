@@ -19,47 +19,62 @@ function getFullSentence(selection) {
   return ''; // Return empty string if not found
 }
 
-
-
-const TextSelectionComponent = () => {
+const Content = () => {
   const [user, setUser] = useState();
+  const [isLoggedin, setIsLoggedin] = useState(false);
   const [selectedText, setSelectedText] = useState('');
   const [contextSentence, setContextSentence] = useState('');
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [showButton, setShowButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+
   useEffect(() => {
-    // Function to fetch and update the component state with the stored value
-    const fetchStoredValue = () => {
-      chrome.storage.local.get(['isAuthenticated', "user"], function(result) {
-        console.log('result', result);
-      
-        setUser(result.user); // Update state with the stored value
+    const handleMessage = (event) => {
+      // Ensure the message is from your web app
+      console.log('event in listener', event);
+      if (event.origin !== "http://localhost:3000") return;
 
-      });
-    };
-
-    fetchStoredValue();
-
-    const handleStorageChange = (changes, namespace) => {
-      if (namespace === 'local' && changes.user) {
-        // Check if the specific key we care about was changed
-        const newValue = changes.user.newValue;
-        setUser(newValue); // Update state with the new value
+      if (event.data.type === "Auth0Login") {
+        console.log("getting token", event.data.token)
+        // Handle the login event, such as storing the token or indicating logged-in status
+        chrome.runtime.sendMessage({type: "LOGIN" ,isLoggedin: event.data.user && true, token: event.data.token, user: event.data.user});
       }
     };
 
-    // Add the event listener for storage changes
+    window.addEventListener("message", handleMessage);
+    console.log('adding listener');
+    // Cleanup function
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []); 
+
+
+
+
+  const handleStorageChange = (changes, areaName) => {
+    if (areaName === 'local' && changes.isLoggedin) {
+      setIsLoggedin(changes.isLoggedin.newValue);
+    }
+    if (areaName === 'local' && changes.user) {
+      setUser(changes.user.newValue);
+    }
+  };
+
+  useEffect(() => {
+
+    chrome.storage.local.get(null, function(result) {
+      console.log('result in content', result);  
+        setIsLoggedin(result.isLoggedin);
+        setUser(result.user);
+    });
     chrome.storage.onChanged.addListener(handleStorageChange);
 
-    // Cleanup function to remove the event listener when the component unmounts
     return () => {
       chrome.storage.onChanged.removeListener(handleStorageChange);
     };
-
   }, []);
-
 
 
   const handleMouseUp = (e) => {
@@ -128,7 +143,7 @@ const TextSelectionComponent = () => {
             zIndex: 2147483647,
           }}
         > 
-          <h1>{user?user.given_name : "not logged"}</h1>
+          <h1>{user?user.name : "not logged"}</h1>
           <p>{selectedText}</p>
           <p>{contextSentence}</p>
           <button onClick={() => setShowModal(false)}>Close</button>
@@ -138,6 +153,6 @@ const TextSelectionComponent = () => {
   );
 };
 
-export default TextSelectionComponent;
+export default Content;
 
 

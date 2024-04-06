@@ -7,7 +7,7 @@ const LoginButton = () => {
     console.log("Button clicked");
     await loginWithPopup();
   }
-  return <button className="login-button" onClick={clickHandler}>Log In</button>;
+  return <button className="login-button" onClick={()=>chrome.tabs.create({url: 'http://localhost:3000'})}>Log In</button>;
 };
 
 export default LoginButton;
