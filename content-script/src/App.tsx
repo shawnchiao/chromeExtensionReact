@@ -2,6 +2,8 @@
 /// <reference types="vite-plugin-svgr/client" />
 // @ts-nocheck
 import { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import gfm from 'remark-gfm';
 function getFullSentence(selection) {
   var contextNode = window.getSelection().anchorNode.parentNode; // Get parent node
   console.log('contextNode', contextNode);
@@ -22,11 +24,13 @@ function getFullSentence(selection) {
 const Content = () => {
   const [user, setUser] = useState();
   const [isLoggedin, setIsLoggedin] = useState(false);
+  const [token, setToken] = useState();
   const [selectedText, setSelectedText] = useState('');
   const [contextSentence, setContextSentence] = useState('');
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [showButton, setShowButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [dicData, setDicData] = useState({});
 
 
   useEffect(() => {
@@ -51,6 +55,33 @@ const Content = () => {
   }, []); 
 
 
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `https://5qspuywt86.execute-api.us-west-1.amazonaws.com/Prod/get-dic-data-for-extension`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            "lexicalItem": selectedText,
+            "contextSentence": contextSentence,
+            "gptProvider": "anthropic"
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+      const data = await response.json();
+      console.log("data from server", data);
+      setDicData(data);
+    } catch (error) {
+        console.error("Error fetching user data", error);
+    }
+  };
 
 
   const handleStorageChange = (changes, areaName) => {
@@ -60,6 +91,9 @@ const Content = () => {
     if (areaName === 'local' && changes.user) {
       setUser(changes.user.newValue);
     }
+    if (areaName === 'local' && changes.token) {
+      setToken(changes.token.newValue);
+    }
   };
 
   useEffect(() => {
@@ -68,6 +102,7 @@ const Content = () => {
       console.log('result in content', result);  
         setIsLoggedin(result.isLoggedin);
         setUser(result.user);
+        setToken(result.token);
     });
     chrome.storage.onChanged.addListener(handleStorageChange);
 
@@ -101,6 +136,7 @@ const Content = () => {
   const handleButtonClick = () => {
     setShowModal(true);
     setShowButton(false); // Hide button once the modal is triggered
+    fetchData();
   };
 
   useEffect(() => {
@@ -110,6 +146,38 @@ const Content = () => {
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, []);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `https://5qspuywt86.execute-api.us-west-1.amazonaws.com/Prod/get-dic-data-for-extension`,
+  //         {
+  //           method: "POST",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //           body: JSON.stringify({
+  //             "lexicalItem": selectedText,
+  //             "contextSentence": contextSentence,
+  //             "gptProvider": "anthropic"
+  //           }),
+  //         }
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error(`Error: ${response.statusText}`);
+  //       }
+  //       const data = await response.json();
+  //       console.log("data from server", data);
+  //       setDicData(data);
+  //     } catch (error) {
+  //         console.error("Error fetching user data", error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [token]);
+
 
   return (
     <>
@@ -146,6 +214,7 @@ const Content = () => {
           <h1>{user?user.name : "not logged"}</h1>
           <p>{selectedText}</p>
           <p>{contextSentence}</p>
+          <ReactMarkdown remarkPlugins={[gfm]}>{dicData && dicData.content && dicData.content[0] ? dicData.content[0].text : "loading"}</ReactMarkdown>
           <button onClick={() => setShowModal(false)}>Close</button>
         </div>
       )}
