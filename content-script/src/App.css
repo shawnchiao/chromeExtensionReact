@@ -37,3 +37,23 @@
     transform: rotate(360deg);
   }
 }
+
+
+.blockquoteStyle {
+  border-left: 4px solid #ccc;
+  padding-left: 15px;
+  color: #666;
+  font-style: italic;
+}
+
+.liStyle {
+  list-style-type: square;
+  margin-left: 20px;
+  padding: 0.5rem;
+}
+
+.modalContent {
+  max-height: 200px;
+  width: 200px; /* Adjust the height as needed */
+  overflow-y: auto; /* Show scrollbar when content overflows */
+}
