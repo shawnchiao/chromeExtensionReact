@@ -1,0 +1,35 @@
+{
+  "phrase": "Why swimming makes me nervous",
+  "translation": "為什麼游泳讓我感到緊張",
+  "definition": "This phrase expresses the speaker's feelings of anxiety or unease about the activity of swimming.",
+  "regionAndFrequency": {
+    "american": 5,
+    "british": 4,
+    "australian": 3
+  },
+  "contexts": [
+    {
+      "context": "Personal conversation",
+      "usage": "I really enjoy being in the water, but for some reason, swimming just makes me nervous. I'm not sure why."
+    },
+    {
+      "context": "Therapy session",
+      "usage": "When we discussed my fear of swimming in our last session, you asked me to explore why it makes me nervous. I think it has to do with a bad experience I had as a child."
+    },
+    {
+      "context": "Online forum post",
+      "usage": "Does anyone else struggle with feeling nervous about swimming? I'd love to hear if you've found ways to overcome that anxiety."
+    }
+  ],
+  "synonyms": [
+    "feel anxious about swimming",
+    "be apprehensive about swimming",
+    "have a fear of swimming"
+  ],
+  "antonyms": [
+    "feel confident swimming",
+    "enjoy swimming",
+    "be at ease in the water"
+  ],
+  "note": "The reasons why someone may feel nervous about swimming can vary, such as past negative experiences, a lack of confidence in the water, or an underlying fear. Exploring the source of the nervousness can help address the issue."
+}

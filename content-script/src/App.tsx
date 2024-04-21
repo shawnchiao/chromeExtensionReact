@@ -5,22 +5,24 @@ import { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 import './App.css';
+import Test from './Test';
+import Dictionary from './Dictionary/Dictionary';
 
 function getFullSentence(selection) {
   var contextNode = window.getSelection().anchorNode.parentNode;
   console.log('contextNode', contextNode);
   var fullText = contextNode.textContent || contextNode.innerText;
-  console.log('fullText', fullText);
+  // console.log('fullText', fullText);
   var regex = /(?<=\s|^)[^.!?]+(?:\.(?!\s)[^.!?]+)*(?:[.!?](?=\s|$)|$)/g
 
   var sentences = fullText.match(regex) || [];
   console.log('sentences', sentences);
   for (var i = 0; i < sentences.length; i++) {
-    if (sentences[i].includes(selection)) {
+    if (sentences[i].includes(selection.trim())) {
       return sentences[i].trim();
     }
   }
-  return '';
+  return selection.trim();
 }
 
 const Content = () => {
@@ -91,9 +93,10 @@ const Content = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            "lexicalItem": selectedText,
-            "contextSentence": contextSentence,
-            "gptProvider": "anthropic"
+            lexicalItem: selectedText,
+            contextSentence: contextSentence,
+            gptProvider: "anthropic",
+            translateInto: "zh-TW",
           }),
         }
       );
@@ -169,7 +172,8 @@ const Content = () => {
       document.removeEventListener('mouseup', onDragEnd);
     };
   }, [isDragging, onDrag, onDragEnd]);
-
+   console.log("selectedText", selectedText)
+   console.log("contextSentence", contextSentence)
   return (
     <>
       {showButton && (
@@ -198,7 +202,7 @@ const Content = () => {
             left: '50%',
             transform: 'translate(-50%, -50%)',
             backgroundColor: 'white',
-            padding: '20px',
+            // padding: '20px',
             border: '1px solid black',
             zIndex: 2147483647,
             cursor: 'move',
@@ -208,12 +212,14 @@ const Content = () => {
             overflow: 'auto', // Enable scrolling for overflow
           }}
         >
-          <ReactMarkdown
+          {/* <Test dicData={dicData && dicData.content && dicData.content[0] && JSON.parse(dicData.content[0].text)}/> */}
+          <Dictionary dicData={dicData && dicData.content && dicData.content[0] ? JSON.parse(dicData.content[0].text): null} />
+          {/* <ReactMarkdown
              components={{
               blockquote: ({node, ...props}) => <blockquote className="blockquoteStyle" {...props} />,
               li: ({node, ...props}) => <li className="liStyle" {...props} />,
             }}
-            remarkPlugins={[gfm]}>{dicData && dicData.content && dicData.content[0] ? dicData.content[0].text : "loading..."}</ReactMarkdown>
+            remarkPlugins={[gfm]}>{dicData && dicData.content && dicData.content[0] ? dicData.content[0].text : "loading..."}</ReactMarkdown> */}
           <button onClick={() => setShowModal(false)}>Close</button>
         </div>
       )}
