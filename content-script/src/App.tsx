@@ -208,6 +208,7 @@ const Content = () => {
             cursor: 'move',
             maxWidth: '350px', // Set a maximum width
             width: '30%', 
+            minWidth: '280px', // Set a minimum width
             maxHeight: '50vh', // Set a maximum height
             overflow: 'auto', // Enable scrolling for overflow
           }}
