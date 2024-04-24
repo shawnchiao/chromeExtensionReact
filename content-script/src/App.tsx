@@ -211,6 +211,8 @@ const Content = () => {
             minWidth: '280px', // Set a minimum width
             maxHeight: '50vh', // Set a maximum height
             overflow: 'auto', // Enable scrolling for overflow
+            border: "5px dashed #d1d1d1",
+            borderRadius: "15px",
           }}
         >
           {/* <Test dicData={dicData && dicData.content && dicData.content[0] && JSON.parse(dicData.content[0].text)}/> */}

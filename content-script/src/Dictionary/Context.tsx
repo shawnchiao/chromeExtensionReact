@@ -18,7 +18,7 @@ const lexicalItemDefinition = ({ dicData, isShowedTran }) => {
     padding: "40px 20px",
     maxWidth: "600px",
     margin: "auto",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    // boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
   };
 
   const headerStyle = {
