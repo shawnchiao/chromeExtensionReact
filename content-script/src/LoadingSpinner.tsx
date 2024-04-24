@@ -1,9 +1,8 @@
-import "./LoadingSpinner.css"; // Import the CSS file for styling
-
+import "./LoadingSpinner.css"; 
 const LoadingSpinner = () => {
   return (
-    <div className="spinner-container">
-      <div className="loading-spinner"></div>
+    <div id="spinner-container-lingofloat">
+      <div id="loading-spinner-lingofloat"></div>
     </div>
   );
 };

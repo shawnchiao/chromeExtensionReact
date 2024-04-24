@@ -13,6 +13,43 @@ function capitalizeFirstCharacter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+// Define the style objects
+const containerStyle = {
+  maxWidth: "350px",
+  margin: "20px auto",
+  padding: "20px 0",
+  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+  borderRadius: "8px",
+  backgroundColor: "#f9f9f9",
+  fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`,
+};
+
+const phraseStyle = {
+  fontSize: "24px",
+  color: "#2a6496",
+  marginLeft: "10px",
+  marginBottom: "15px",
+  fontWeight: "bold",
+};
+
+const sectionStyle = {
+  backgroundColor: "#fff",
+  padding: "15px",
+  borderRadius: "0px",
+  marginBottom: "20px",
+};
+
+const noteStyle = {
+  fontStyle: "italic",
+  marginTop: "20px",
+  backgroundColor: "#e6f7ff",
+  padding: "10px",
+  borderRadius: "0px",
+  lineHeight: "1.2",
+};
+
+// The existing functional component
 function WordNo({ data, isShowedTran }) {
   const partOfSpeechStyle = {
     fontWeight: "bold",
@@ -23,7 +60,6 @@ function WordNo({ data, isShowedTran }) {
 
   const definitionStyle = {
     textAlign: "left",
-    // paddingRight: "20px",
     fontWeight: "700",
   };
 
@@ -32,19 +68,21 @@ function WordNo({ data, isShowedTran }) {
     fontStyle: "italic",
     fontWeight: "400",
   };
+
   const definitionContainerStyle = {
-    margin: "10px 0", // Changed from 'margin-bottom'
+    margin: "10px 0",
     padding: "20px",
-    borderRadius: "15px", // Changed from 'border-radius'
+    borderRadius: "15px",
     backgroundColor: "#ecf0f1",
     display: "flex",
     flexDirection: "column",
     gap: "10px",
   };
+
   return (
-    <div className="container">
+    <div style={containerStyle}>
       <div style={{ paddingBottom: "20px" }}>
-        <div className="phrase">{capitalizeFirstCharacter(data.word)}</div>
+        <div style={phraseStyle}>{capitalizeFirstCharacter(data.word)}</div>
         <div
           style={{
             display: "flex",
@@ -54,19 +92,16 @@ function WordNo({ data, isShowedTran }) {
           }}
         >
           {Object.entries(data.phoneticSymbols).map(([key, value]) => {
-            const regionCode = capitalizeFirstCharacter(key) || "Other"; // Return "Other" if the key is not found
+            const regionCode = capitalizeFirstCharacter(key) || "Other";
             return (
               <span style={{ marginLeft: "5px" }} key={key}>
                 {regionCode}:<span style={{ marginLeft: "10px" }}>{value}</span>
               </span>
             );
           })}
-          {/* UK: {data.phoneticSymbols.british} | US:{" "}
-          {data.phoneticSymbols.american} | AU:{" "}
-          {data.phoneticSymbols.australian} */}
         </div>
       </div>
-      <div className="section">
+      <div style={sectionStyle}>
         {data.entries.map((entry, index) => (
           <div key={index}>
             <div style={partOfSpeechStyle}>
@@ -79,11 +114,9 @@ function WordNo({ data, isShowedTran }) {
                     fontWeight: "700",
                   }}
                 >
-                  {" "}
                   {def.translation}
                 </div>
                 <div style={definitionStyle}>
-                  {/* <strong style={{ padding: "5px" }}>{defIndex + 1}</strong>{" "} */}
                   {capitalizeFirstCharacter(def.definition)}
                 </div>
                 <div style={exampleStyle}>
@@ -95,9 +128,10 @@ function WordNo({ data, isShowedTran }) {
         ))}
       </div>
 
-      <div className="note">{data.note}</div>
+      <div style={noteStyle}>{data.note}</div>
     </div>
   );
 }
 
 export default WordNo;
+

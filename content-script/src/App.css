@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -36,7 +36,7 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */
 
 
 .blockquoteStyle {
@@ -52,8 +52,4 @@
   padding: 0.5rem;
 }
 
-.modalContent {
-  max-height: 200px;
-  width: 200px; /* Adjust the height as needed */
-  overflow-y: auto; /* Show scrollbar when content overflows */
-}
+

@@ -203,14 +203,13 @@ const Content = () => {
             transform: 'translate(-50%, -50%)',
             backgroundColor: 'white',
             // padding: '20px',
-            border: '1px solid black',
             zIndex: 2147483647,
             cursor: 'move',
-            maxWidth: '350px', // Set a maximum width
+            maxWidth: '350px', 
             width: '30%', 
-            minWidth: '280px', // Set a minimum width
-            maxHeight: '50vh', // Set a maximum height
-            overflow: 'auto', // Enable scrolling for overflow
+            minWidth: '280px', 
+            maxHeight: '50vh', 
+            overflow: 'auto', 
             border: "5px dashed #d1d1d1",
             borderRadius: "15px",
           }}
