@@ -38,6 +38,7 @@ const Content = () => {
   const modalRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -115,13 +116,19 @@ const Content = () => {
     if (e.target.id === 'text-selection-button' || e.target.closest('#text-selection-modal')) {
       return;
     }
-
+  
     const text = window.getSelection().toString().trim();
     const selection = window.getSelection().toString();
-    if (text && document.getElementById('text-selection-button') === null) {
+    if (text) {
       setSelectedText(text);
       setContextSentence(getFullSentence(selection));
-      setButtonPosition({ x: e.pageX, y: e.pageY });
+  
+      // Get the bounding rectangle of the selected text
+      const range = window.getSelection().getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+  
+      setButtonPosition({ x: rect.right, y: rect.top });
+      setModalPosition({ x: rect.right, y: rect.top });
       setShowButton(true);
     } else {
       setShowButton(false);
@@ -178,61 +185,61 @@ const Content = () => {
   return (
     <>
       {showButton && (
-        <button
-          id="text-selection-button"
-          className='logo-button'
-          style={{
-            backgroundImage: `url(${chrome.runtime.getURL('images/logoT.png')})`,
-            position: 'absolute',
-            left: `${buttonPosition.x + 15}px`,
-            top: `${buttonPosition.y + 15}px`,
-            zIndex: 2147483648,
-          }}
-          onClick={handleButtonClick}
-        ></button>
-      )}
+  <button
+    id="text-selection-button"
+    className='logo-button'
+    style={{
+      backgroundImage: `url(${chrome.runtime.getURL('images/logoT.png')})`,
+      position: 'fixed',
+      left: buttonPosition.x,
+      top: buttonPosition.y,
+      zIndex: 2147483648,
+    }}
+    onClick={handleButtonClick}
+  ></button>
+)}
 
-      {showModal && (
-        <div
-          id="text-selection-modal"
-          ref={modalRef}
-          onMouseDown={onDragStart}
-          style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: 'white',
-            // padding: '20px',
-            zIndex: 2147483647,
-            cursor: 'move',
-            maxWidth: '350px', 
-            width: '30%', 
-            minWidth: '280px', 
-            maxHeight: '50vh', 
-            overflow: 'auto', 
-            border: "5px dashed #d1d1d1",
-            borderRadius: "15px",
-            fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`,
-            // display: 'flex',
-            // flexDirection: 'column',
-          }}
-        >
-          <div style={{
-      position: 'sticky',
-      top: 0,
-      width: '100%',
-      height: '30px',
-      borderRadius: '25px 0',
-      backgroundColor: "rgb(209 209 209)",
-      borderBottom: '1px solid #d1d1d1',
-      display: 'flex',
-      justifyContent: 'flex-end',
-      alignItems: 'center',
-      paddingRight: '10px', // Padding to ensure content is not right against the edge
-      zIndex: 2147483649, // Ensure it's above all other modal elements
-    }}>
-          <button style={{
+{showModal && (
+  <div
+    id="text-selection-modal"
+    ref={modalRef}
+    style={{
+      position: 'fixed',
+      top: modalPosition.y,
+      left: modalPosition.x,
+      backgroundColor: 'white',
+      zIndex: 2147483647,
+      cursor: 'default',
+      maxWidth: '350px',
+      width: '30%',
+      minWidth: '280px',
+      maxHeight: '50vh',
+      overflow: 'auto',
+      border: "5px dashed #d1d1d1",
+      borderRadius: "15px",
+      fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`
+    }}
+  >
+    <div 
+      style={{
+        position: 'sticky',
+        top: 0,
+        width: '100%',
+        height: '30px',
+        borderRadius: '25px 0',
+        backgroundColor: "rgb(209 209 209)",
+        borderBottom: '1px solid #d1d1d1',
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        paddingRight: '10px', // Padding to ensure content is not right against the edge
+        zIndex: 2147483649, // Ensure it's above all other modal elements
+        cursor: 'move', // Cursor indicates this area is draggable
+      }}
+      onMouseDown={onDragStart} // Bind dragging to the navigation bar
+    >
+      <button 
+        style={{
           marginRight: '5px', // Space before the right edge of the navigation bar
           padding: '2px 5px', // Padding inside the button for better touch area
           fontSize: '15px', // Larger text for better readability
@@ -242,20 +249,19 @@ const Content = () => {
           color: 'white',
           borderRadius: '20px', // Rounded corners for the button
           cursor: 'pointer'
-        }} onClick={() => setShowModal(false)}>X</button>
-          </div>
-          {/* <Test dicData={dicData && dicData.content && dicData.content[0] && JSON.parse(dicData.content[0].text)}/> */}
-          <Dictionary dicData={dicData && dicData.content && dicData.content[0] ? JSON.parse(dicData.content[0].text): null} />
-          {/* <ReactMarkdown
-             components={{
-              blockquote: ({node, ...props}) => <blockquote className="blockquoteStyle" {...props} />,
-              li: ({node, ...props}) => <li className="liStyle" {...props} />,
-            }}
-            remarkPlugins={[gfm]}>{dicData && dicData.content && dicData.content[0] ? dicData.content[0].text : "loading..."}</ReactMarkdown> */}
-        
-        
-        </div>
-      )}
+        }} 
+        onClick={() => setShowModal(false)}
+      >
+        X
+      </button>
+    </div>
+
+      {/* Content of the modal */}
+      <Dictionary dicData={dicData && dicData.content && dicData.content[0] ? JSON.parse(dicData.content[0].text) : null} />
+
+  </div>
+)}
+
     </>
   );
 };
