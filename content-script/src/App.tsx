@@ -131,6 +131,7 @@ const Content = () => {
   const handleButtonClick = () => {
     setShowModal(true);
     setShowButton(false);
+    setDicData({});
     fetchData();
   };
 
@@ -212,6 +213,7 @@ const Content = () => {
             overflow: 'auto', 
             border: "5px dashed #d1d1d1",
             borderRadius: "15px",
+            fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`
           }}
         >
           {/* <Test dicData={dicData && dicData.content && dicData.content[0] && JSON.parse(dicData.content[0].text)}/> */}

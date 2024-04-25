@@ -27,16 +27,18 @@ const containerStyles = {
 const phraseStyles = {
   fontSize: '24px',
   color: '#2a6496',
-  marginLeft: '10px',
-  marginBottom: '15px',
+  // marginLeft: '10px',
+  // marginBottom: '15px',
+  margin: '4%',
   fontWeight: 'bold'
 };
 
 const translationStyles = {
   fontSize: '15px',
   color: 'rgb(82, 86, 90)',
-  marginLeft: '12px',
-  marginBottom: '15px'
+  // marginLeft: '12px',
+  // marginBottom: '15px'
+  margin: '5%',
 };
 const sectionStyles = {
   marginBottom: '20px',
@@ -71,8 +73,8 @@ function Sentence({ data, isShowedTran }) {
     <div style={containerStyles}>
       <div style={phraseStyles}>{data.sentence}</div>
       {isShowedTran && <div style={translationStyles}>{data.translation}</div>}
-      <div className="section">
-        <div className="title">Overall Explanation</div>
+      <div style={sectionStyles}>
+        <div style={titleStyles}>Overall Explanation</div>
         <div>{data.overallExplanation}</div>
       </div>
       <div style={sectionStyles}>

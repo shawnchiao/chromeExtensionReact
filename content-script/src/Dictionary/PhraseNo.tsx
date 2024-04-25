@@ -127,7 +127,7 @@ function PhraseNo({ data, isShowedTran }) {
           </div>
         ))}
       </div>
-      <div style={sectionStyle} style={synonymAntonymRowStyle}>
+      <div style={{ ...sectionStyle, ...synonymAntonymRowStyle }}>
         <div>
           <div style={titleStyle}>Synonyms</div>
           <ul style={listStyle}>
