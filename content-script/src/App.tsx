@@ -213,9 +213,37 @@ const Content = () => {
             overflow: 'auto', 
             border: "5px dashed #d1d1d1",
             borderRadius: "15px",
-            fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`
+            fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`,
+            // display: 'flex',
+            // flexDirection: 'column',
           }}
         >
+          <div style={{
+      position: 'sticky',
+      top: 0,
+      width: '100%',
+      height: '30px',
+      borderRadius: '25px 0',
+      backgroundColor: "rgb(209 209 209)",
+      borderBottom: '1px solid #d1d1d1',
+      display: 'flex',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      paddingRight: '10px', // Padding to ensure content is not right against the edge
+      zIndex: 2147483649, // Ensure it's above all other modal elements
+    }}>
+          <button style={{
+          marginRight: '5px', // Space before the right edge of the navigation bar
+          padding: '2px 5px', // Padding inside the button for better touch area
+          fontSize: '15px', // Larger text for better readability
+          fontWeight: '900', 
+          border: 'none',
+          backgroundColor: 'rgb(126 105 23 / 84%)', // A blue color for the button
+          color: 'white',
+          borderRadius: '20px', // Rounded corners for the button
+          cursor: 'pointer'
+        }} onClick={() => setShowModal(false)}>X</button>
+          </div>
           {/* <Test dicData={dicData && dicData.content && dicData.content[0] && JSON.parse(dicData.content[0].text)}/> */}
           <Dictionary dicData={dicData && dicData.content && dicData.content[0] ? JSON.parse(dicData.content[0].text): null} />
           {/* <ReactMarkdown
@@ -224,7 +252,8 @@ const Content = () => {
               li: ({node, ...props}) => <li className="liStyle" {...props} />,
             }}
             remarkPlugins={[gfm]}>{dicData && dicData.content && dicData.content[0] ? dicData.content[0].text : "loading..."}</ReactMarkdown> */}
-          <button onClick={() => setShowModal(false)}>Close</button>
+        
+        
         </div>
       )}
     </>
