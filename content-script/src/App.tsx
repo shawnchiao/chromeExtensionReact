@@ -128,7 +128,7 @@ const Content = () => {
       const rect = range.getBoundingClientRect();
   
       setButtonPosition({ x: rect.right, y: rect.top });
-      setModalPosition({ x: rect.right, y: rect.top });
+      setModalPosition({ x: rect.right+20, y: rect.top-170 });
       setShowButton(true);
     } else {
       setShowButton(false);
