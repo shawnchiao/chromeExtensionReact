@@ -40,6 +40,7 @@ const Content = () => {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
   const [modals, setModals] = useState([]);
+  
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -122,20 +123,23 @@ const Content = () => {
     }
 
     const modalClicked = modalRef.current && modalRef.current.contains(e.target);
-
     if (modalClicked && !e.target.closest('#allowSelection')) {
+      return;
+    }
+    if (modalClicked && e.target.closest('#allowSelection')) {
       const text = window.getSelection().toString().trim();
       const selection = window.getSelection().toString();
       if (text) {
         setSelectedText(text);
         setContextSentence(getFullSentence(selection));
-
+        console.log("IM here >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         // Get the bounding rectangle of the selected text
         const range = window.getSelection().getRangeAt(0);
         const rect = range.getBoundingClientRect();
         setButtonPosition({ x: rect.right, y: rect.top });
         setModalPosition({ x: rect.right + 20, y: rect.top - 170 });
-        setShowButton(true);
+        setShowButton("modal");
+
       } else {
         setShowButton(false);
       }
@@ -154,6 +158,7 @@ const Content = () => {
       setButtonPosition({ x: rect.right, y: rect.top });
       setModalPosition({ x: rect.right + 20, y: rect.top - 170 });
       setShowButton(true);
+      
     } else {
       setShowButton(false);
     }
@@ -174,9 +179,10 @@ const Content = () => {
   //   }
   // };
   
-  const handleButtonClick = (fromInsideModal = false) => {
+  const handleButtonClick = (type) => {
+    console.log("type", type)
     setShowButton(false);
-    if (fromInsideModal) {
+    if (type === "modal") {
     setDicData([...dicData, {}])
     fetchData(modals.length)
 
@@ -250,7 +256,7 @@ const Content = () => {
             top: buttonPosition.y,
             zIndex: 2147483648,
           }}
-          onClick={(e) => handleButtonClick(e.target.closest('.text-selection-modal') != null)}
+          onClick={()=>handleButtonClick(showButton)}
         ></button>
       )}
 
