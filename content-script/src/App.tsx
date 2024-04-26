@@ -34,7 +34,7 @@ const Content = () => {
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [showButton, setShowButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [dicData, setDicData] = useState({});
+  const [dicData, setDicData] = useState([]);
   const modalRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -84,34 +84,37 @@ const Content = () => {
     };
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = async (index) => {
     try {
-      const response = await fetch(
-        `https://5qspuywt86.execute-api.us-west-1.amazonaws.com/Prod/get-dic-data-for-extension`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            lexicalItem: selectedText,
-            contextSentence: contextSentence,
-            gptProvider: "anthropic",
-            translateInto: "zh-TW",
-          }),
-        }
-      );
+      const response = await fetch(`https://5qspuywt86.execute-api.us-west-1.amazonaws.com/Prod/get-dic-data-for-extension`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          lexicalItem: selectedText,
+          contextSentence: contextSentence,
+          gptProvider: "anthropic",
+          translateInto: "zh-TW",
+        }),
+      });
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
       const data = await response.json();
       console.log("data from server", data);
-      setDicData(data);
+      // Set data for the specific modal index
+      setDicData(oldData => {
+        const newData = [...oldData];
+        newData[index] = data;
+        return newData;
+      });
     } catch (error) {
       console.error("Error fetching data", error);
     }
   };
+  
 
   const handleMouseUp = (e) => {
     if (e.target.id === 'text-selection-button') {
@@ -156,10 +159,26 @@ const Content = () => {
     }
   };
 
-  const handleButtonClick = () => {
+  // const handleButtonClick = (fromInsideModal = false) => {
+  //   setShowButton(false);
+  //   if (!fromInsideModal) {
+  //     const newModalPosition = { x: modalPosition.x + 370, y: modalPosition.y };
+  //     setModals([...modals, { position: newModalPosition }]);
+  //     setDicData([...dicData, {}]); // Initialize new dicData entry
+  //     fetchData(modals.length); // Fetch data for new modal at the end of the list
+  //   } else {
+  //     // Clear all existing data and set for the first modal
+  //     setDicData([{}]);
+  //     fetchData(0);
+  //     setModals([{ position: modalPosition }]);
+  //   }
+  // };
+  
+  const handleButtonClick = (fromInsideModal = false) => {
     setShowButton(false);
-    setDicData({});
-    fetchData();
+    if (fromInsideModal) {
+    setDicData([...dicData, {}])
+    fetchData(modals.length)
 
     if (modals.length === 0) {
       setModals([{ position: modalPosition }]);
@@ -171,7 +190,12 @@ const Content = () => {
       };
       setModals([...modals, { position: newModalPosition }]);
     }
+  } else {
+    setDicData([{}]);
+    fetchData(0);
+    setModals([{ position: modalPosition }]);
   };
+  }
 
   useEffect(() => {
     document.addEventListener('mouseup', handleMouseUp);
@@ -226,7 +250,7 @@ const Content = () => {
             top: buttonPosition.y,
             zIndex: 2147483648,
           }}
-          onClick={handleButtonClick}
+          onClick={(e) => handleButtonClick(e.target.closest('.text-selection-modal') != null)}
         ></button>
       )}
 
@@ -293,7 +317,7 @@ const Content = () => {
           </div>
 
           {/* Content of the modal */}
-          <Dictionary dicData={dicData && dicData.content && dicData.content[0] ? JSON.parse(dicData.content[0].text) : null} />
+          <Dictionary dicData={dicData[index] && dicData[index].content && dicData[index].content[0] ? JSON.parse(dicData[index].content[0].text) : null} />
         </div>
       ))}
     </>
