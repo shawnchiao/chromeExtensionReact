@@ -39,6 +39,7 @@ const Content = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
+  const [modals, setModals] = useState([]);
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -116,27 +117,39 @@ const Content = () => {
     if (e.target.id === 'text-selection-button') {
       return;
     }
-  
+
     const modalClicked = modalRef.current && modalRef.current.contains(e.target);
-  
+
     if (modalClicked && !e.target.closest('#allowSelection')) {
+      const text = window.getSelection().toString().trim();
+      const selection = window.getSelection().toString();
+      if (text) {
+        setSelectedText(text);
+        setContextSentence(getFullSentence(selection));
+
+        // Get the bounding rectangle of the selected text
+        const range = window.getSelection().getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        setButtonPosition({ x: rect.right, y: rect.top });
+        setModalPosition({ x: rect.right + 20, y: rect.top - 170 });
+        setShowButton(true);
+      } else {
+        setShowButton(false);
+      }
       return;
     }
-  
+
     const text = window.getSelection().toString().trim();
     const selection = window.getSelection().toString();
     if (text) {
       setSelectedText(text);
       setContextSentence(getFullSentence(selection));
-  
+
       // Get the bounding rectangle of the selected text
       const range = window.getSelection().getRangeAt(0);
       const rect = range.getBoundingClientRect();
       setButtonPosition({ x: rect.right, y: rect.top });
-      if (!modalClicked) {
-        setModalPosition({ x: rect.right + 20, y: rect.top - 170 });
-
-      }
+      setModalPosition({ x: rect.right + 20, y: rect.top - 170 });
       setShowButton(true);
     } else {
       setShowButton(false);
@@ -144,10 +157,20 @@ const Content = () => {
   };
 
   const handleButtonClick = () => {
-    setShowModal(true);
     setShowButton(false);
     setDicData({});
     fetchData();
+
+    if (modals.length === 0) {
+      setModals([{ position: modalPosition }]);
+    } else {
+      const lastModal = modals[modals.length - 1];
+      const newModalPosition = {
+        x: lastModal.position.x + 370,
+        y: lastModal.position.y,
+      };
+      setModals([...modals, { position: newModalPosition }]);
+    }
   };
 
   useEffect(() => {
@@ -191,85 +214,88 @@ const Content = () => {
    console.log("selectedText", selectedText)
    console.log("contextSentence", contextSentence)
   return (
-    <>
+       <>
       {showButton && (
-  <button
-    id="text-selection-button"
-    className='logo-button'
-    style={{
-      backgroundImage: `url(${chrome.runtime.getURL('images/logoT.png')})`,
-      position: 'fixed',
-      left: buttonPosition.x,
-      top: buttonPosition.y,
-      zIndex: 2147483648,
-    }}
-    onClick={handleButtonClick}
-  ></button>
-)}
+        <button
+          id="text-selection-button"
+          className="logo-button"
+          style={{
+            backgroundImage: `url(${chrome.runtime.getURL('images/logoT.png')})`,
+            position: 'fixed',
+            left: buttonPosition.x,
+            top: buttonPosition.y,
+            zIndex: 2147483648,
+          }}
+          onClick={handleButtonClick}
+        ></button>
+      )}
 
-{showModal && (
-  <div
-    id="text-selection-modal"
-    ref={modalRef}
-    style={{
-      position: 'fixed',
-      top: modalPosition.y,
-      left: modalPosition.x,
-      backgroundColor: 'white',
-      zIndex: 2147483646,
-      cursor: 'default',
-      maxWidth: '350px',
-      width: '30%',
-      minWidth: '280px',
-      maxHeight: '50vh',
-      overflow: 'auto',
-      border: "5px solid #d1d1d1",
-      borderRadius: "15px",
-      fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`
-    }}
-  >
-    <div 
-      style={{
-        position: 'sticky',
-        top: 0,
-        width: '100%',
-        height: '30px',
-        borderRadius: '10px 0',
-        backgroundColor: "rgb(209 209 209)",
-        borderBottom: '1px solid #d1d1d1',
-        display: 'flex',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        paddingRight: '10px', // Padding to ensure content is not right against the edge
-        zIndex: 2147483649, // Ensure it's above all other modal elements
-        cursor: 'move', // Cursor indicates this area is draggable
-      }}
-      onMouseDown={onDragStart} // Bind dragging to the navigation bar
-    >
-      <button 
-        style={{
-          marginRight: '5px', // Space before the right edge of the navigation bar
-          padding: '2px 5px', // Padding inside the button for better touch area
-          fontSize: '15px', // Larger text for better readability
-          fontWeight: '900', 
-          border: 'none',
-          backgroundColor: 'black', // A blue color for the button
-          color: 'white',
-          borderRadius: '20px', // Rounded corners for the button
-          cursor: 'pointer'
-        }} 
-        onClick={() => setShowModal(false)}
-      >
-        X
-      </button>
-    </div>
+      {modals.map((modal, index) => (
+        <div
+          key={index}
+          id={`text-selection-modal-${index}`}
+          ref={modalRef}
+          style={{
+            position: 'fixed',
+            top: modal.position.y,
+            left: modal.position.x,
+            backgroundColor: 'white',
+            zIndex: 2147483646,
+            cursor: 'default',
+            maxWidth: '350px',
+            width: '30%',
+            minWidth: '280px',
+            maxHeight: '50vh',
+            overflow: 'auto',
+            border: "5px solid #d1d1d1",
+            borderRadius: "15px",
+            fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`,
+          }}
+        >
+          <div
+            style={{
+              position: 'sticky',
+              top: 0,
+              width: '100%',
+              height: '30px',
+              borderRadius: '10px 0',
+              backgroundColor: "rgb(209 209 209)",
+              borderBottom: '1px solid #d1d1d1',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              paddingRight: '10px',
+              zIndex: 2147483649,
+              cursor: 'move',
+            }}
+            onMouseDown={onDragStart}
+          >
+            <button
+              style={{
+                marginRight: '5px',
+                padding: '2px 5px',
+                fontSize: '15px',
+                fontWeight: '900',
+                border: 'none',
+                backgroundColor: 'black',
+                color: 'white',
+                borderRadius: '20px',
+                cursor: 'pointer',
+              }}
+              onClick={() => {
+                const newModals = [...modals];
+                newModals.splice(index, 1);
+                setModals(newModals);
+              }}
+            >
+              X
+            </button>
+          </div>
 
-      {/* Content of the modal */}
-      <Dictionary dicData={dicData && dicData.content && dicData.content[0] ? JSON.parse(dicData.content[0].text) : null} />
-
-  </div>
-)}
-
+          {/* Content of the modal */}
+          <Dictionary dicData={dicData && dicData.content && dicData.content[0] ? JSON.parse(dicData.content[0].text) : null} />
+        </div>
+      ))}
     </>
   );
 };
