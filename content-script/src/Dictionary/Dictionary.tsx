@@ -202,7 +202,7 @@ const mockDataFromApi = {
 // Make sure the path is correct based on your project structure
 
 function DictionaryEntry({dicData}) {
-  if (!dicData) { // Check if dicData is null or undefined
+  if (!dicData) {
     return <LoadingSpinner />;
   }
   console.log("dicData.phrase: ", dicData.phrase);
@@ -211,7 +211,7 @@ function DictionaryEntry({dicData}) {
   console.log("dicData.lexicalItem: ", dicData.lexicalItem);
   
   return (
-    <div>
+    <div id="allowSelection">
       {dicData.phrase && <PhraseNo data={dicData} isShowedTran={true} />}
       {dicData.word && <WordNo data={dicData} isShowedTran={true} />}
       {dicData.sentence && <Sentence data={dicData} isShowedTran={true} />}

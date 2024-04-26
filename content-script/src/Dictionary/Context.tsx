@@ -132,7 +132,8 @@ const lexicalItemDefinition = ({ dicData, isShowedTran }) => {
           style={{
             ...regions,
             display: "grid",
-            gridTemplateColumns: "auto 1fr 1fr",
+            // gridTemplateColumns: "auto 1fr 1fr",
+            gridTemplateColumns: "auto auto auto",
             alignItems: "center",
             columnGap: "10px",
           }}

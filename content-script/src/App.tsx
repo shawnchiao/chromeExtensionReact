@@ -113,7 +113,13 @@ const Content = () => {
   };
 
   const handleMouseUp = (e) => {
-    if (e.target.id === 'text-selection-button' || e.target.closest('#text-selection-modal')) {
+    if (e.target.id === 'text-selection-button') {
+      return;
+    }
+  
+    const modalClicked = modalRef.current && modalRef.current.contains(e.target);
+  
+    if (modalClicked && !e.target.closest('#allowSelection')) {
       return;
     }
   
@@ -126,9 +132,11 @@ const Content = () => {
       // Get the bounding rectangle of the selected text
       const range = window.getSelection().getRangeAt(0);
       const rect = range.getBoundingClientRect();
-  
       setButtonPosition({ x: rect.right, y: rect.top });
-      setModalPosition({ x: rect.right+20, y: rect.top-170 });
+      if (!modalClicked) {
+        setModalPosition({ x: rect.right + 20, y: rect.top - 170 });
+
+      }
       setShowButton(true);
     } else {
       setShowButton(false);
@@ -208,14 +216,14 @@ const Content = () => {
       top: modalPosition.y,
       left: modalPosition.x,
       backgroundColor: 'white',
-      zIndex: 2147483647,
+      zIndex: 2147483646,
       cursor: 'default',
       maxWidth: '350px',
       width: '30%',
       minWidth: '280px',
       maxHeight: '50vh',
       overflow: 'auto',
-      border: "5px dashed #d1d1d1",
+      border: "5px solid #d1d1d1",
       borderRadius: "15px",
       fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`
     }}
@@ -226,7 +234,7 @@ const Content = () => {
         top: 0,
         width: '100%',
         height: '30px',
-        borderRadius: '25px 0',
+        borderRadius: '10px 0',
         backgroundColor: "rgb(209 209 209)",
         borderBottom: '1px solid #d1d1d1',
         display: 'flex',
@@ -245,7 +253,7 @@ const Content = () => {
           fontSize: '15px', // Larger text for better readability
           fontWeight: '900', 
           border: 'none',
-          backgroundColor: 'rgb(126 105 23 / 84%)', // A blue color for the button
+          backgroundColor: 'black', // A blue color for the button
           color: 'white',
           borderRadius: '20px', // Rounded corners for the button
           cursor: 'pointer'
