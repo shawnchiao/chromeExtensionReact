@@ -1,7 +1,7 @@
 /// <reference types="chrome" />
 /// <reference types="vite-plugin-svgr/client" />
 // @ts-nocheck
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 import './App.css';
@@ -35,12 +35,18 @@ const Content = () => {
   const [showButton, setShowButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [dicData, setDicData] = useState([]);
-  const modalRef = useRef(null);
+  const modalRefs = useRef([]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
+  const [draggedModalIndex, setDraggedModalIndex] = useState(null);
   const [modals, setModals] = useState([]);
-  
+  const getModalRef = (index) => {
+    if (!modalRefs.current[index]) {
+      modalRefs.current[index] = React.createRef();
+    }
+    return modalRefs.current[index];
+  };
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -121,12 +127,26 @@ const Content = () => {
     if (e.target.id === 'text-selection-button') {
       return;
     }
-
-    const modalClicked = modalRef.current && modalRef.current.contains(e.target);
-    if (modalClicked && !e.target.closest('#allowSelection')) {
+    console.log("e.target.id>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", e.target.id);
+    if (e.target.id === 'modal-header-lingofloat') {
       return;
     }
-    if (modalClicked && e.target.closest('#allowSelection')) {
+    // let modalClicked = false;
+    // let modalIndex = -1;
+  
+    // // Check which modal, if any, was clicked
+    // modalRefs.current.forEach((ref, index) => {
+    //   if (ref.current && ref.current.contains(e.target)) {
+    //     modalClicked = true;
+    //     modalIndex = index;
+    //   }
+    // });
+  
+    // if (modalClicked && !e.target.closest('#allowSelection')) {
+    //   return;
+    // }
+  
+    if (e.target.closest('#allowSelection')) {
       const text = window.getSelection().toString().trim();
       const selection = window.getSelection().toString();
       if (text) {
@@ -139,30 +159,29 @@ const Content = () => {
         setButtonPosition({ x: rect.right, y: rect.top });
         setModalPosition({ x: rect.right + 20, y: rect.top - 170 });
         setShowButton("modal");
-
       } else {
         setShowButton(false);
       }
       return;
     }
-
+  
     const text = window.getSelection().toString().trim();
     const selection = window.getSelection().toString();
     if (text) {
       setSelectedText(text);
       setContextSentence(getFullSentence(selection));
-
+  
       // Get the bounding rectangle of the selected text
       const range = window.getSelection().getRangeAt(0);
       const rect = range.getBoundingClientRect();
       setButtonPosition({ x: rect.right, y: rect.top });
       setModalPosition({ x: rect.right + 20, y: rect.top - 170 });
       setShowButton(true);
-      
     } else {
       setShowButton(false);
     }
   };
+  
 
   // const handleButtonClick = (fromInsideModal = false) => {
   //   setShowButton(false);
@@ -211,36 +230,48 @@ const Content = () => {
     };
   }, []);
 
-  const onDragStart = (e) => {
+  const onDragStart = (index, e) => {
     setIsDragging(true);
+    setDraggedModalIndex(index);
     setDragStart({
-      x: e.clientX - modalRef.current.offsetLeft,
-      y: e.clientY - modalRef.current.offsetTop,
+      x: e.clientX - modals[index].position.x,
+      y: e.clientY - modals[index].position.y,
     });
     e.preventDefault();
   };
-
+  
   const onDrag = (e) => {
-    if (!isDragging) return;
-    modalRef.current.style.left = `${e.clientX - dragStart.x}px`;
-    modalRef.current.style.top = `${e.clientY - dragStart.y}px`;
+    if (!isDragging || draggedModalIndex === null) return;
+    const newPosition = {
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y,
+    };
+    setModals((prevModals) => {
+      const updatedModals = [...prevModals];
+      updatedModals[draggedModalIndex] = {
+        ...updatedModals[draggedModalIndex],
+        position: newPosition,
+      };
+      return updatedModals;
+    });
   };
-
+  
   const onDragEnd = () => {
     setIsDragging(false);
+    setDraggedModalIndex(null);
   };
-
+  
   useEffect(() => {
     if (isDragging) {
       document.addEventListener('mousemove', onDrag);
       document.addEventListener('mouseup', onDragEnd);
     }
-
+  
     return () => {
       document.removeEventListener('mousemove', onDrag);
       document.removeEventListener('mouseup', onDragEnd);
     };
-  }, [isDragging, onDrag, onDragEnd]);
+  }, [isDragging, dragStart, draggedModalIndex]);
    console.log("selectedText", selectedText)
    console.log("contextSentence", contextSentence)
   return (
@@ -264,7 +295,7 @@ const Content = () => {
         <div
           key={index}
           id={`text-selection-modal-${index}`}
-          ref={modalRef}
+          ref={getModalRef(index)}
           style={{
             position: 'fixed',
             top: modal.position.y,
@@ -283,6 +314,7 @@ const Content = () => {
           }}
         >
           <div
+            id='modal-header-lingofloat'
             style={{
               position: 'sticky',
               top: 0,
@@ -298,7 +330,7 @@ const Content = () => {
               zIndex: 2147483649,
               cursor: 'move',
             }}
-            onMouseDown={onDragStart}
+            onMouseDown={(e)=>onDragStart(index, e)}
           >
             <button
               style={{
