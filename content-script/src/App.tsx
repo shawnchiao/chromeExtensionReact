@@ -3,6 +3,7 @@
 // @ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { v4 as uuidv4 } from 'uuid';
 import gfm from 'remark-gfm';
 import './App.css';
 import Test from './Test';
@@ -10,13 +11,13 @@ import Dictionary from './Dictionary/Dictionary';
 
 function getFullSentence(selection) {
   var contextNode = window.getSelection().anchorNode.parentNode;
-  console.log('contextNode', contextNode);
+  // console.log('contextNode', contextNode);
   var fullText = contextNode.textContent || contextNode.innerText;
-  // console.log('fullText', fullText);
+  // // console.log('fullText', fullText);
   var regex = /(?<=\s|^)[^.!?]+(?:\.(?!\s)[^.!?]+)*(?:[.!?](?=\s|$)|$)/g
 
   var sentences = fullText.match(regex) || [];
-  console.log('sentences', sentences);
+  // console.log('sentences', sentences);
   for (var i = 0; i < sentences.length; i++) {
     if (sentences[i].includes(selection.trim())) {
       return sentences[i].trim();
@@ -34,14 +35,14 @@ const Content = () => {
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [showButton, setShowButton] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [dicData, setDicData] = useState([]);
+  const [dicData, setDicData] = useState({});
   const modalRefs = useRef([]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
   const [draggedModalIndex, setDraggedModalIndex] = useState(null);
   const [modals, setModals] = useState([]);
-  const [abortControllers, setAbortControllers] = useState([]);
+  const [abortControllers, setAbortControllers] = useState({});
   const getModalRef = (index) => {
     if (!modalRefs.current[index]) {
       modalRefs.current[index] = React.createRef();
@@ -51,7 +52,7 @@ const Content = () => {
 
   useEffect(() => {
     const handleMessage = (event) => {
-      console.log('event in listener', event);
+      // console.log('event in listener', event);
       if (event.origin !== "http://localhost:3000") return;
 
       if (event.data.type === "Auth0Login") {
@@ -61,7 +62,7 @@ const Content = () => {
     };
 
     window.addEventListener("message", handleMessage);
-    console.log('adding listener');
+    // console.log('adding listener');
     return () => {
       window.removeEventListener("message", handleMessage);
     };
@@ -69,7 +70,7 @@ const Content = () => {
 
   useEffect(() => {
     chrome.storage.local.get(null, function (result) {
-      console.log('result in content', result);
+      // console.log('result in content', result);
       setIsLoggedin(result.isLoggedin);
       setUser(result.user);
       setToken(result.token);
@@ -91,13 +92,11 @@ const Content = () => {
       chrome.storage.onChanged.removeListener(handleStorageChange);
     };
   }, []);
-  const fetchData = async (index) => {
+  const fetchData = async (modalId) => {
     const controller = new AbortController();
-    const signal = controller.signal;
-    const updatedControllers = [...abortControllers];
-    updatedControllers[index] = controller;
+    const updatedControllers = {...abortControllers, [modalId]: controller};
     setAbortControllers(updatedControllers);
-  
+
     try {
       const response = await fetch(`https://5qspuywt86.execute-api.us-west-1.amazonaws.com/Prod/get-dic-data-for-extension`, {
         method: "POST",
@@ -111,18 +110,13 @@ const Content = () => {
           gptProvider: "anthropic",
           translateInto: "zh-TW",
         }),
-        signal: signal
+        signal: controller.signal
       });
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
       const data = await response.json();
-      // Update data for the specific modal index
-      setDicData(oldData => {
-        const newData = [...oldData];
-        newData[index] = data;
-        return newData;
-      });
+      setDicData(oldData => ({ ...oldData, [modalId]: data }));
     } catch (error) {
       if (error.name === 'AbortError') {
         console.log('Fetch aborted');
@@ -132,13 +126,12 @@ const Content = () => {
     }
   };
   
-  
 
   const handleMouseUp = (e) => {
     if (e.target.id === 'text-selection-button') {
       return;
     }
-    console.log("e.target.id>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", e.target.id);
+    // console.log("e.target.id>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", e.target.id);
     if (e.target.id === 'modal-header-lingofloat') {
       return;
     }
@@ -208,28 +201,44 @@ const Content = () => {
   //     setModals([{ position: modalPosition }]);
   //   }
   // };
-  
+  const closeModal = (modalId) => {
+    setModals(prev => prev.filter(modal => modal.id !== modalId));
+    setDicData(prev => {
+      const newData = { ...prev };
+      delete newData[modalId];
+      return newData;
+    });
+    if (abortControllers[modalId]) {
+      abortControllers[modalId].abort();
+    }
+    setAbortControllers(prev => {
+      const newControllers = { ...prev };
+      delete newControllers[modalId];
+      return newControllers;
+    });
+  };
   const handleButtonClick = (type) => {
+    const modalId = uuidv4();
     console.log("type", type)
     setShowButton(false);
     if (type === "modal") {
-    setDicData([...dicData, {}])
-    fetchData(modals.length)
+      setDicData({...dicData, [modalId]: {}});
+    fetchData(modalId)
 
     if (modals.length === 0) {
-      setModals([{ position: modalPosition }]);
+      setModals([{ id:modalId, position: modalPosition }]);
     } else {
       const lastModal = modals[modals.length - 1];
       const newModalPosition = {
         x: lastModal.position.x + 370,
         y: lastModal.position.y,
       };
-      setModals([...modals, { position: newModalPosition }]);
+      setModals([...modals, {id:modalId, position: newModalPosition }]);
     }
   } else {
-    setDicData([{}]);
-    fetchData(0);
-    setModals([{ position: modalPosition }]);
+    setDicData({...dicData, [modalId]: {}});
+    fetchData(modalId);
+    setModals([{id:modalId, position: modalPosition }]);
   };
   }
 
@@ -283,8 +292,9 @@ const Content = () => {
       document.removeEventListener('mouseup', onDragEnd);
     };
   }, [isDragging, dragStart, draggedModalIndex]);
-   console.log("selectedText", selectedText);
-   console.log("contextSentence", contextSentence);
+   // console.log("selectedText", selectedText);
+   // console.log("contextSentence", contextSentence);
+   console.log("dicData", dicData);
   return (
        <>
       {showButton && (
@@ -355,26 +365,14 @@ const Content = () => {
                 borderRadius: '20px',
                 cursor: 'pointer',
               }}
-              onClick={() => {
-                const newModals = modals.filter((_, modalIndex) => modalIndex !== index);
-                setModals(newModals);
-                const newDicData = dicData.filter((_, dataIdx) => dataIdx !== index);
-                setDicData(newDicData);
-              
-                // Abort fetch if in progress
-                if (abortControllers[index]) {
-                  abortControllers[index].abort();
-                }
-                const newAbortControllers = abortControllers.filter((_, controllerIndex) => controllerIndex !== index);
-                setAbortControllers(newAbortControllers);
-              }}
+              onClick={()=>closeModal(modal.id)}
             >
               X
             </button>
           </div>
 
           {/* Content of the modal */}
-          <Dictionary dicData={dicData[index] && dicData[index].content && dicData[index].content[0] ? JSON.parse(dicData[index].content[0].text) : null} />
+          <Dictionary dicData={dicData[modal.id] && dicData[modal.id].content && dicData[modal.id].content[0] ? JSON.parse(dicData[modal.id].content[0].text) : null} />
         </div>
       ))}
     </>
