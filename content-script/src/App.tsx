@@ -345,9 +345,13 @@ const Content = () => {
                 cursor: 'pointer',
               }}
               onClick={() => {
-                const newModals = [...modals];
-                newModals.splice(index, 1);
+                // Remove the modal from the array of modals
+                const newModals = modals.filter((_, modalIndex) => modalIndex !== index);
                 setModals(newModals);
+              
+                // Remove the dictionary data associated with that modal
+                const newDicData = dicData.filter((_, dataIdx) => dataIdx !== index);
+                setDicData(newDicData);
               }}
             >
               X
