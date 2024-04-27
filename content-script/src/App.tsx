@@ -41,6 +41,7 @@ const Content = () => {
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
   const [draggedModalIndex, setDraggedModalIndex] = useState(null);
   const [modals, setModals] = useState([]);
+  const [abortControllers, setAbortControllers] = useState([]);
   const getModalRef = (index) => {
     if (!modalRefs.current[index]) {
       modalRefs.current[index] = React.createRef();
@@ -90,8 +91,13 @@ const Content = () => {
       chrome.storage.onChanged.removeListener(handleStorageChange);
     };
   }, []);
-
   const fetchData = async (index) => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const updatedControllers = [...abortControllers];
+    updatedControllers[index] = controller;
+    setAbortControllers(updatedControllers);
+  
     try {
       const response = await fetch(`https://5qspuywt86.execute-api.us-west-1.amazonaws.com/Prod/get-dic-data-for-extension`, {
         method: "POST",
@@ -105,22 +111,27 @@ const Content = () => {
           gptProvider: "anthropic",
           translateInto: "zh-TW",
         }),
+        signal: signal
       });
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
       const data = await response.json();
-      console.log("data from server", data);
-      // Set data for the specific modal index
+      // Update data for the specific modal index
       setDicData(oldData => {
         const newData = [...oldData];
         newData[index] = data;
         return newData;
       });
     } catch (error) {
-      console.error("Error fetching data", error);
+      if (error.name === 'AbortError') {
+        console.log('Fetch aborted');
+      } else {
+        console.error("Error fetching data", error);
+      }
     }
   };
+  
   
 
   const handleMouseUp = (e) => {
@@ -272,8 +283,8 @@ const Content = () => {
       document.removeEventListener('mouseup', onDragEnd);
     };
   }, [isDragging, dragStart, draggedModalIndex]);
-   console.log("selectedText", selectedText)
-   console.log("contextSentence", contextSentence)
+   console.log("selectedText", selectedText);
+   console.log("contextSentence", contextSentence);
   return (
        <>
       {showButton && (
@@ -345,13 +356,17 @@ const Content = () => {
                 cursor: 'pointer',
               }}
               onClick={() => {
-                // Remove the modal from the array of modals
                 const newModals = modals.filter((_, modalIndex) => modalIndex !== index);
                 setModals(newModals);
-              
-                // Remove the dictionary data associated with that modal
                 const newDicData = dicData.filter((_, dataIdx) => dataIdx !== index);
                 setDicData(newDicData);
+              
+                // Abort fetch if in progress
+                if (abortControllers[index]) {
+                  abortControllers[index].abort();
+                }
+                const newAbortControllers = abortControllers.filter((_, controllerIndex) => controllerIndex !== index);
+                setAbortControllers(newAbortControllers);
               }}
             >
               X
