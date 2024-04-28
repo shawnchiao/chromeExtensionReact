@@ -3,7 +3,7 @@
 import PhraseNo from "./PhraseNo";
 import WordNo from "./WordNo";
 import Sentence from "./Sentence";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingSpinner from "../components/LoadingSpinner";
 import Context from "./Context";
 
 const mockDataFromApi = {

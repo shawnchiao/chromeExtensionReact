@@ -7,11 +7,9 @@ import Modal from "./components/Modal";
 import { v4 as uuidv4 } from "uuid";
 import Dictionary from "./Dictionary/Dictionary";
 import { getFullSentence } from "./utils/textHelpers";
-
+import { useAuth } from "./hook/useAuth";
 const Content = () => {
-  const [user, setUser] = useState();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [token, setToken] = useState();
+  const { user, isLoggedIn, token } = useAuth();
   const [selectedText, setSelectedText] = useState("");
   const [contextSentence, setContextSentence] = useState("");
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
@@ -24,56 +22,7 @@ const Content = () => {
   const [modals, setModals] = useState([]);
   const [abortControllers, setAbortControllers] = useState({});
 
-  useEffect(() => {
-    const handleMessage = (event) => {
-      if (event.origin !== "http://localhost:3000") return;
 
-      if (event.data.type === "Auth0Login") {
-        chrome.runtime.sendMessage({
-          type: "LOGIN",
-          isLoggedIn: event.data.user && true,
-          token: event.data.token,
-          user: event.data.user,
-        });
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
-  }, []);
-
-  useEffect(() => {
-    const fetchStorageData = () => {
-      chrome.storage.local.get(null, (result) => {
-        setIsLoggedIn(result.isLoggedIn);
-        setUser(result.user);
-        setToken(result.token);
-      });
-    };
-
-    const handleStorageChange = (changes, areaName) => {
-      if (areaName === "local") {
-        if (changes.isLoggedIn) {
-          setIsLoggedIn(changes.isLoggedIn.newValue);
-        }
-        if (changes.user) {
-          setUser(changes.user.newValue);
-        }
-        if (changes.token) {
-          setToken(changes.token.newValue);
-        }
-      }
-    };
-
-    fetchStorageData();
-    chrome.storage.onChanged.addListener(handleStorageChange);
-
-    return () => {
-      chrome.storage.onChanged.removeListener(handleStorageChange);
-    };
-  }, []);
 
   const fetchData = useCallback(
     async (modalId) => {
