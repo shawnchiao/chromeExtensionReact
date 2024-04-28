@@ -17,20 +17,12 @@ const Content = () => {
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [showButton, setShowButton] = useState(false);
   const [dicData, setDicData] = useState({});
-  const modalRefs = useRef([]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
   const [draggedModalIndex, setDraggedModalIndex] = useState(null);
   const [modals, setModals] = useState([]);
   const [abortControllers, setAbortControllers] = useState({});
-
-  const getModalRef = useCallback((index) => {
-    if (!modalRefs.current[index]) {
-      modalRefs.current[index] = React.createRef();
-    }
-    return modalRefs.current[index];
-  }, []);
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -53,24 +45,29 @@ const Content = () => {
   }, []);
 
   useEffect(() => {
-    chrome.storage.local.get(null, (result) => {
-      setIsLoggedIn(result.isLoggedIn);
-      setUser(result.user);
-      setToken(result.token);
-    });
+    const fetchStorageData = () => {
+      chrome.storage.local.get(null, (result) => {
+        setIsLoggedIn(result.isLoggedIn);
+        setUser(result.user);
+        setToken(result.token);
+      });
+    };
 
     const handleStorageChange = (changes, areaName) => {
-      if (areaName === "local" && changes.isLoggedIn) {
-        setIsLoggedIn(changes.isLoggedIn.newValue);
-      }
-      if (areaName === "local" && changes.user) {
-        setUser(changes.user.newValue);
-      }
-      if (areaName === "local" && changes.token) {
-        setToken(changes.token.newValue);
+      if (areaName === "local") {
+        if (changes.isLoggedIn) {
+          setIsLoggedIn(changes.isLoggedIn.newValue);
+        }
+        if (changes.user) {
+          setUser(changes.user.newValue);
+        }
+        if (changes.token) {
+          setToken(changes.token.newValue);
+        }
       }
     };
 
+    fetchStorageData();
     chrome.storage.onChanged.addListener(handleStorageChange);
 
     return () => {
@@ -126,23 +123,6 @@ const Content = () => {
       return;
     }
 
-    if (event.target.closest("#allowSelection")) {
-      const text = window.getSelection().toString().trim();
-      const selection = window.getSelection().toString();
-      if (text) {
-        setSelectedText(text);
-        setContextSentence(getFullSentence(selection));
-        const range = window.getSelection().getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-        setButtonPosition({ x: rect.right, y: rect.top });
-        setModalPosition({ x: rect.right + 20, y: rect.top - 170 });
-        setShowButton("modal");
-      } else {
-        setShowButton(false);
-      }
-      return;
-    }
-
     const text = window.getSelection().toString().trim();
     const selection = window.getSelection().toString();
     if (text) {
@@ -152,7 +132,7 @@ const Content = () => {
       const rect = range.getBoundingClientRect();
       setButtonPosition({ x: rect.right, y: rect.top });
       setModalPosition({ x: rect.right + 20, y: rect.top - 170 });
-      setShowButton(true);
+      setShowButton(event.target.closest("#allowSelection") ? "modal" : true);
     } else {
       setShowButton(false);
     }
@@ -183,10 +163,10 @@ const Content = () => {
     (type) => {
       const modalId = uuidv4();
       setShowButton(false);
-      if (type === "modal") {
-        setDicData({ ...dicData, [modalId]: {} });
-        fetchData(modalId);
+      setDicData({ ...dicData, [modalId]: {} });
+      fetchData(modalId);
 
+      if (type === "modal") {
         if (modals.length === 0) {
           setModals([{ id: modalId, position: modalPosition }]);
         } else {
@@ -198,8 +178,6 @@ const Content = () => {
           setModals([...modals, { id: modalId, position: newModalPosition }]);
         }
       } else {
-        setDicData({ ...dicData, [modalId]: {} });
-        fetchData(modalId);
         setModals([{ id: modalId, position: modalPosition }]);
       }
     },
@@ -215,9 +193,6 @@ const Content = () => {
 
   const onDragStart = useCallback(
     (index, event) => {
-      console.log("event", event);
-      console.log("modals", modals);
-      console.log("index", index);
       setIsDragging(true);
       setDraggedModalIndex(index);
       setDragStart({
