@@ -1,68 +1,32 @@
 /// <reference types="chrome" />
 /// <reference types="vite-plugin-svgr/client" />
 // @ts-nocheck
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import LogoButton from "./components/LogoButton";
 import Modal from "./components/Modal";
 import { v4 as uuidv4 } from "uuid";
 import Dictionary from "./Dictionary/Dictionary";
 import { getFullSentence } from "./utils/textHelpers";
 import { useAuth } from "./hook/useAuth";
+import { useFetchDicData } from "./hook/useFetchDicData";
 const Content = () => {
+  // Auth related states
   const { user, isLoggedIn, token } = useAuth();
+  // Text selection related states
   const [selectedText, setSelectedText] = useState("");
   const [contextSentence, setContextSentence] = useState("");
+  // Logo button interaction related states
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [showButton, setShowButton] = useState(false);
-  const [dicData, setDicData] = useState({});
+  // Modal interaction related states
+  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
+  const [modals, setModals] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
   const [draggedModalIndex, setDraggedModalIndex] = useState(null);
-  const [modals, setModals] = useState([]);
-  const [abortControllers, setAbortControllers] = useState({});
-
-
-
-  const fetchData = useCallback(
-    async (modalId) => {
-      const controller = new AbortController();
-      const updatedControllers = { ...abortControllers, [modalId]: controller };
-      setAbortControllers(updatedControllers);
-
-      try {
-        const response = await fetch(
-          `https://5qspuywt86.execute-api.us-west-1.amazonaws.com/Prod/get-dic-data-for-extension`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              lexicalItem: selectedText,
-              contextSentence: contextSentence,
-              gptProvider: "anthropic",
-              translateInto: "zh-TW",
-            }),
-            signal: controller.signal,
-          }
-        );
-        if (!response.ok) {
-          throw new Error(`Error: ${response.statusText}`);
-        }
-        const data = await response.json();
-        setDicData((oldData) => ({ ...oldData, [modalId]: data }));
-      } catch (error) {
-        if (error.name === "AbortError") {
-          console.log("Fetch aborted");
-        } else {
-          console.error("Error fetching data", error);
-        }
-      }
-    },
-    [abortControllers, contextSentence, selectedText, token]
-  );
+  // Data fetching related states
+  const { dicData, fetchData, abortFetch, addDicData, removeDicData } =
+    useFetchDicData(token);
 
   const handleMouseUp = useCallback((event) => {
     if (
@@ -71,7 +35,6 @@ const Content = () => {
     ) {
       return;
     }
-
     const text = window.getSelection().toString().trim();
     const selection = window.getSelection().toString();
     if (text) {
@@ -91,29 +54,18 @@ const Content = () => {
     (modalId) => {
       console.log("clicking close button");
       setModals((prev) => prev.filter((modal) => modal.id !== modalId));
-      setDicData((prev) => {
-        const newData = { ...prev };
-        delete newData[modalId];
-        return newData;
-      });
-      if (abortControllers[modalId]) {
-        abortControllers[modalId].abort();
-      }
-      setAbortControllers((prev) => {
-        const newControllers = { ...prev };
-        delete newControllers[modalId];
-        return newControllers;
-      });
+      removeDicData(modalId);
+      abortFetch(modalId);
     },
-    [abortControllers]
+    [abortFetch]
   );
 
   const handleButtonClick = useCallback(
     (type) => {
       const modalId = uuidv4();
       setShowButton(false);
-      setDicData({ ...dicData, [modalId]: {} });
-      fetchData(modalId);
+      addDicData(modalId);
+      fetchData(modalId, selectedText, contextSentence);
 
       if (type === "modal") {
         if (modals.length === 0) {
@@ -130,7 +82,7 @@ const Content = () => {
         setModals([{ id: modalId, position: modalPosition }]);
       }
     },
-    [dicData, fetchData, modalPosition, modals]
+    [dicData, fetchData, modalPosition, modals, selectedText, contextSentence]
   );
 
   useEffect(() => {
