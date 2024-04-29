@@ -36,8 +36,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   if (message.type === "LOGIN") {
     chrome.storage.local.set({isLoggedin: message.isLoggedin, token: message.token, user: message.user}, () => {
-      console.log("User is logged in. Token stored.", message.token);
-      console.log("User is logged in. User stored.", message.user);
+      // console.log("User is logged in. Token stored.", message.token);
+      // console.log("User is logged in. User stored.", message.user);
+      console.log("storage updated complete", message);
+      chrome.storage.local.get(null, (result) => {
+        console.log("Current storage state post-update:", result);
+      });
     });
   }
 

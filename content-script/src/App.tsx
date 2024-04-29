@@ -11,7 +11,7 @@ import { useAuth } from "./hook/useAuth";
 import { useFetchDicData } from "./hook/useFetchDicData";
 const Content = () => {
   // Auth related states
-  const { user, isLoggedIn, token } = useAuth();
+  const { user, isLoggedin, token } = useAuth();
   // Text selection related states
   const [selectedText, setSelectedText] = useState("");
   const [contextSentence, setContextSentence] = useState("");
@@ -62,7 +62,7 @@ const Content = () => {
 
   const handleButtonClick = useCallback(
     (type) => {
-      if (!isLoggedIn) {
+      if (!isLoggedin) {
         chrome.runtime.sendMessage({
           action: "toLoginFromContent",
         });

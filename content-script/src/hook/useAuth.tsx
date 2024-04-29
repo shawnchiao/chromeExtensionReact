@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 export const useAuth = () => {
   const [user, setUser] = useState();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedin, setIsLoggedin] = useState(false);
   const [token, setToken] = useState();
 
   useEffect(() => {
@@ -13,7 +13,7 @@ export const useAuth = () => {
       if (event.data.type === "Auth0Login") {
         chrome.runtime.sendMessage({
           type: "LOGIN",
-          isLoggedIn: event.data.user && true,
+          isLoggedin: event.data.user && true,
           token: event.data.token,
           user: event.data.user,
         });
@@ -29,18 +29,18 @@ export const useAuth = () => {
   useEffect(() => {
     const fetchStorageData = () => {
       chrome.storage.local.get(null, (result) => {
-        setIsLoggedIn(result.isLoggedIn);
+        setIsLoggedin(result.isLoggedin);
         setUser(result.user);
         setToken(result.token);
       });
     };
 
     const handleStorageChange = (changes, areaName) => {
-      console.log("local storage in chrome", chrome.storage.local.get(null));
-      console.log("storage changed", changes, areaName);
+
+      console.log("All storage changes:", changes);
       if (areaName === "local") {
-        if (changes.isLoggedIn) {
-          setIsLoggedIn(changes.isLoggedIn.newValue);
+        if (changes.isLoggedin) {
+          setIsLoggedin(changes.isLoggedin.newValue);
         }
         if (changes.user) {
           setUser(changes.user.newValue);
@@ -59,6 +59,6 @@ export const useAuth = () => {
     };
   }, []);
 
-  return { user, isLoggedIn, token };
+  return { user, isLoggedin, token };
 };
 
