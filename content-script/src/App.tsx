@@ -62,6 +62,13 @@ const Content = () => {
 
   const handleButtonClick = useCallback(
     (type) => {
+      if (!isLoggedIn) {
+        chrome.runtime.sendMessage({
+          action: "toLoginFromContent",
+        });
+        return;
+      }
+
       const modalId = uuidv4();
       setShowButton(false);
       addDicData(modalId);

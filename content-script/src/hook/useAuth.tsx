@@ -36,6 +36,8 @@ export const useAuth = () => {
     };
 
     const handleStorageChange = (changes, areaName) => {
+      console.log("local storage in chrome", chrome.storage.local.get(null));
+      console.log("storage changed", changes, areaName);
       if (areaName === "local") {
         if (changes.isLoggedIn) {
           setIsLoggedIn(changes.isLoggedIn.newValue);

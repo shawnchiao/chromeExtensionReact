@@ -30,6 +30,10 @@ console.log('background.js');
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('message', message);
+  if (message.action === "toLoginFromContent") {
+    chrome.tabs.create({url: 'http://localhost:3000'});
+    return
+  }
   if (message.type === "LOGIN") {
     chrome.storage.local.set({isLoggedin: message.isLoggedin, token: message.token, user: message.user}, () => {
       console.log("User is logged in. Token stored.", message.token);
