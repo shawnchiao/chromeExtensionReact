@@ -1,0 +1,27 @@
+/* Toggle.css */
+.toggle-container {
+  width: 3rem;
+  height: 1.2rem;
+  background-color: #ccc;
+  border-radius: 17px;
+  display: flex;
+  align-items: center;
+  padding: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.toggle-button {
+  width: 1.2rem;
+  height: 1.2rem;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.toggle-container.toggled {
+  background-color: #4caf50; /* Green background when toggled on */
+}
+
+.toggle-button.toggled {
+  transform: translateX(1.7rem); /* Move button to the right when toggled */
+}

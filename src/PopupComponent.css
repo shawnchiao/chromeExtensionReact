@@ -3,7 +3,8 @@
 .popup-container {
   font-family: 'Arial', sans-serif;
   color: #333;
-  max-width: 300px;
+  max-width: 250px;
+  min-width: 200px;
   background: white;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);

@@ -1,35 +1,499 @@
-{
-  "phrase": "Why swimming makes me nervous",
-  "translation": "為什麼游泳讓我感到緊張",
-  "definition": "This phrase expresses the speaker's feelings of anxiety or unease about the activity of swimming.",
-  "regionAndFrequency": {
-    "american": 5,
-    "british": 4,
-    "australian": 3
+[
+  {
+    "value": "KH",
+    "label": "ខ្មែរ",
+    "countryName": "Cambodia",
+    "langCode": "km-KH",
+    "flag": "🇰🇭"
   },
-  "contexts": [
-    {
-      "context": "Personal conversation",
-      "usage": "I really enjoy being in the water, but for some reason, swimming just makes me nervous. I'm not sure why."
-    },
-    {
-      "context": "Therapy session",
-      "usage": "When we discussed my fear of swimming in our last session, you asked me to explore why it makes me nervous. I think it has to do with a bad experience I had as a child."
-    },
-    {
-      "context": "Online forum post",
-      "usage": "Does anyone else struggle with feeling nervous about swimming? I'd love to hear if you've found ways to overcome that anxiety."
-    }
-  ],
-  "synonyms": [
-    "feel anxious about swimming",
-    "be apprehensive about swimming",
-    "have a fear of swimming"
-  ],
-  "antonyms": [
-    "feel confident swimming",
-    "enjoy swimming",
-    "be at ease in the water"
-  ],
-  "note": "The reasons why someone may feel nervous about swimming can vary, such as past negative experiences, a lack of confidence in the water, or an underlying fear. Exploring the source of the nervousness can help address the issue."
-}
+  {
+    "value": "LA",
+    "label": "ລາວ",
+    "countryName": "Laos",
+    "langCode": "lo-LA",
+    "flag": "🇱🇦"
+  },
+  {
+    "value": "VN",
+    "label": "Tiếng Việt",
+    "countryName": "Vietnam",
+    "langCode": "vi",
+    "flag": "🇻🇳"
+  },
+  {
+    "value": "KR",
+    "label": "한국어",
+    "countryName": "South Korea",
+    "langCode": "ko-KR",
+    "flag": "🇰🇷"
+  },
+  {
+    "value": "JP",
+    "label": "日本語",
+    "countryName": "Japan",
+    "langCode": "ja-JP",
+    "flag": "🇯🇵"
+  },
+  {
+    "value": "TW",
+    "label": "繁體中文",
+    "countryName": "Taiwan",
+    "langCode": "zh-TW",
+    "flag": "🇹🇼"
+  },
+  {
+    "value": "CN",
+    "label": "简体中文",
+    "countryName": "China",
+    "langCode": "zh-CN",
+    "flag": "🇨🇳"
+  },
+  {
+    "value": "AZ",
+    "label": "Azərbaycan",
+    "countryName": "Azerbaijan",
+    "langCode": "az-AZ",
+    "flag": "🇦🇿"
+  },
+  {
+    "value": "ID",
+    "label": "Bahasa Indonesia",
+    "countryName": "Indonesia",
+    "langCode": "id-ID",
+    "flag": "🇮🇩"
+  },
+  {
+    "value": "MY",
+    "label": "Bahasa Melayu",
+    "countryName": "Malaysia",
+    "langCode": "ms-MY",
+    "flag": "🇲🇾"
+  },
+  {
+    "value": "BA",
+    "label": "Bosanski",
+    "countryName": "Bosnia and Herzegovina",
+    "langCode": "bs-BA",
+    "flag": "🇧🇦"
+  },
+  {
+    "value": "AD",
+    "label": "Català",
+    "countryName": "Andorra",
+    "langCode": "ca-AD",
+    "flag": "🇦🇩"
+  },
+  {
+    "value": "CZ",
+    "label": "Čeština",
+    "countryName": "Czechia",
+    "langCode": "cs-CZ",
+    "flag": "🇨🇿"
+  },
+  {
+    "value": "RS",
+    "label": "Српски",
+    "countryName": "Serbia",
+    "langCode": "sr",
+    "flag": "🇷🇸"
+  },
+  {
+    "value": "DK",
+    "label": "Dansk",
+    "countryName": "Denmark",
+    "langCode": "da-DK",
+    "flag": "🇩🇰"
+  },
+  {
+    "value": "DE",
+    "label": "Deutsch",
+    "countryName": "Germany",
+    "langCode": "de-DE",
+    "flag": "🇩🇪"
+  },
+  {
+    "value": "BY",
+    "label": "Беларуская",
+    "countryName": "Belarus",
+    "langCode": "be-BY",
+    "flag": "🇧🇾"
+  },
+  {
+    "value": "GR",
+    "label": "Ελληνικά",
+    "countryName": "Greece",
+    "langCode": "el-GR",
+    "flag": "🇬🇷"
+  },
+  {
+    "value": "EE",
+    "label": "Eesti",
+    "countryName": "Estonia",
+    "langCode": "et-EE",
+    "flag": "🇪🇪"
+  },
+  {
+    "value": "ES",
+    "label": "Español",
+    "countryName": "Spain",
+    "langCode": "es-ES",
+    "flag": "🇪🇸"
+  },
+  {
+    "value": "FR",
+    "label": "Français",
+    "countryName": "France",
+    "langCode": "fr-FR",
+    "flag": "🇫🇷"
+  },
+  {
+    "value": "FO",
+    "label": "Føroyskt",
+    "countryName": "Faroe Islands",
+    "langCode": "fo-FO",
+    "flag": "🇫🇴"
+  },
+  {
+    "value": "HR",
+    "label": "Hrvatski",
+    "countryName": "Croatia",
+    "langCode": "hr-HR",
+    "flag": "🇭🇷"
+  },
+  {
+    "value": "IS",
+    "label": "Íslenska",
+    "countryName": "Iceland",
+    "langCode": "is-IS",
+    "flag": "🇮🇸"
+  },
+  {
+    "value": "IT",
+    "label": "Italiano",
+    "countryName": "Italy",
+    "langCode": "it-IT",
+    "flag": "🇮🇹"
+  },
+  {
+    "value": "GL",
+    "label": "Kalaallisut",
+    "countryName": "Greenland",
+    "langCode": "kl-GL",
+    "flag": "🇬🇱"
+  },
+  {
+    "value": "KZ",
+    "label": "Қазақ",
+    "countryName": "Kazakhstan",
+    "langCode": "kk-KZ",
+    "flag": "🇰🇿"
+  },
+  {
+    "value": "RW",
+    "label": "Kinyarwanda",
+    "countryName": "Rwanda",
+    "langCode": "rw-RW",
+    "flag": "🇷🇼"
+  },
+  {
+    "value": "KG",
+    "label": "Кыргызча",
+    "countryName": "Kyrgyzstan",
+    "langCode": "ky-KG",
+    "flag": "🇰🇬"
+  },
+  {
+    "value": "LT",
+    "label": "Lietuvių",
+    "countryName": "Lithuania",
+    "langCode": "lt-LT",
+    "flag": "🇱🇹"
+  },
+  {
+    "value": "LV",
+    "label": "Latviešu",
+    "countryName": "Latvia",
+    "langCode": "lv-LV",
+    "flag": "🇱🇻"
+  },
+  {
+    "value": "HU",
+    "label": "Magyar",
+    "countryName": "Hungary",
+    "langCode": "hu-HU",
+    "flag": "🇭🇺"
+  },
+  {
+    "value": "MT",
+    "label": "Malti",
+    "countryName": "Malta",
+    "langCode": "mt-MT",
+    "flag": "🇲🇹"
+  },
+  {
+    "value": "MK",
+    "label": "Македонски",
+    "countryName": "North Macedonia",
+    "langCode": "mk-MK",
+    "flag": "🇲🇰"
+  },
+  {
+    "value": "MN",
+    "label": "Монгол",
+    "countryName": "Mongolia",
+    "langCode": "mn-MN",
+    "flag": "🇲🇳"
+  },
+  {
+    "value": "NL",
+    "label": "Nederlands",
+    "countryName": "Netherlands",
+    "langCode": "nl-NL",
+    "flag": "🇳🇱"
+  },
+  {
+    "value": "SJ",
+    "label": "Norsk",
+    "countryName": "Svalbard and Jan Mayen",
+    "langCode": "no",
+    "flag": "🇸🇯"
+  },
+  {
+    "value": "NO",
+    "label": "Norsk Bokmål",
+    "countryName": "Norway",
+    "langCode": "nb-NO",
+    "flag": "🇳🇴"
+  },
+  {
+    "value": "UZ",
+    "label": "Oʻzbekcha",
+    "countryName": "Uzbekistan",
+    "langCode": "uz",
+    "flag": "🇺🇿"
+  },
+  {
+    "value": "PL",
+    "label": "Polski",
+    "countryName": "Poland",
+    "langCode": "pl-PL",
+    "flag": "🇵🇱"
+  },
+  {
+    "value": "PT",
+    "label": "Português",
+    "countryName": "Portugal",
+    "langCode": "pt-PT",
+    "flag": "🇵🇹"
+  },
+  {
+    "value": "RU",
+    "label": "Русский",
+    "countryName": "Russia",
+    "langCode": "ru-RU",
+    "flag": "🇷🇺"
+  },
+  {
+    "value": "RO",
+    "label": "Română",
+    "countryName": "Romania",
+    "langCode": "ro-RO",
+    "flag": "🇷🇴"
+  },
+  {
+    "value": "AL",
+    "label": "Shqip",
+    "countryName": "Albania",
+    "langCode": "sq-AL",
+    "flag": "🇦🇱"
+  },
+  {
+    "value": "SO",
+    "label": "Soomaali",
+    "countryName": "Somalia",
+    "langCode": "so",
+    "flag": "🇸🇴"
+  },
+  {
+    "value": "FI",
+    "label": "Suomi",
+    "countryName": "Finland",
+    "langCode": "fi-FI",
+    "flag": "🇫🇮"
+  },
+  {
+    "value": "SK",
+    "label": "Slovenčina",
+    "countryName": "Slovakia",
+    "langCode": "sk",
+    "flag": "🇸🇰"
+  },
+  {
+    "value": "SI",
+    "label": "Slovenščina",
+    "countryName": "Slovenia",
+    "langCode": "sl",
+    "flag": "🇸🇮"
+  },
+  {
+    "value": "SE",
+    "label": "Svenska",
+    "countryName": "Sweden",
+    "langCode": "sv",
+    "flag": "🇸🇪"
+  },
+  {
+    "value": "TJ",
+    "label": "Тоҷикӣ",
+    "countryName": "Tajikistan",
+    "langCode": "tg",
+    "flag": "🇹🇯"
+  },
+  {
+    "value": "TM",
+    "label": "Türkmençe",
+    "countryName": "Turkmenistan",
+    "langCode": "tk",
+    "flag": "🇹🇲"
+  },
+  {
+    "value": "TR",
+    "label": "Türkçe",
+    "countryName": "Turkey",
+    "langCode": "tr",
+    "flag": "🇹🇷"
+  },
+  {
+    "value": "UA",
+    "label": "Українська",
+    "countryName": "Ukraine",
+    "langCode": "uk",
+    "flag": "🇺🇦"
+  },
+  {
+    "value": "AF",
+    "label": "پښتو",
+    "countryName": "Afghanistan",
+    "langCode": "ps-AF",
+    "flag": "🇦🇫"
+  },
+  {
+    "value": "MM",
+    "label": "မြန်မာ",
+    "countryName": "Myanmar",
+    "langCode": "my-MM",
+    "flag": "🇲🇲"
+  },
+  {
+    "value": "SA",
+    "label": "العربية",
+    "countryName": "Saudi Arabia",
+    "langCode": "ar-SA",
+    "flag": "🇸🇦"
+  },
+  {
+    "value": "IL",
+    "label": "עברית",
+    "countryName": "Israel",
+    "langCode": "he-IL",
+    "flag": "🇮🇱"
+  },
+  {
+    "value": "NP",
+    "label": "नेपाली",
+    "countryName": "Nepal",
+    "langCode": "ne-NP",
+    "flag": "🇳🇵"
+  },
+  {
+    "value": "PK",
+    "label": "اردو",
+    "countryName": "Pakistan",
+    "langCode": "ur-PK",
+    "flag": "🇵🇰"
+  },
+  {
+    "value": "MV",
+    "label": "ދިވެހިބަސް",
+    "countryName": "Maldives",
+    "langCode": "dv-MV",
+    "flag": "🇲🇻"
+  },
+  {
+    "value": "AM",
+    "label": "Հայերեն",
+    "countryName": "Armenia",
+    "langCode": "hy-AM",
+    "flag": "🇦🇲"
+  },
+  {
+    "value": "GE",
+    "label": "ქართული",
+    "countryName": "Georgia",
+    "langCode": "ka-GE",
+    "flag": "🇬🇪"
+  },
+  {
+    "value": "ER",
+    "label": "ትግርኛ",
+    "countryName": "Eritrea",
+    "langCode": "ti-ER",
+    "flag": "🇪🇷"
+  },
+  {
+    "value": "BG",
+    "label": "Български",
+    "countryName": "Bulgaria",
+    "langCode": "bg-BG",
+    "flag": "🇧🇬"
+  },
+  {
+    "value": "BT",
+    "label": "ཇོང་ཁ",
+    "countryName": "Bhutan",
+    "langCode": "dz-BT",
+    "flag": "🇧🇹"
+  },
+  {
+    "value": "BD",
+    "label": "বাংলা",
+    "countryName": "Bangladesh",
+    "langCode": "bn-BD",
+    "flag": "🇧🇩"
+  },
+  {
+    "value": "ET",
+    "label": "አማርኛ",
+    "countryName": "Ethiopia",
+    "langCode": "am-ET",
+    "flag": "🇪🇹"
+  },
+  {
+    "value": "IN",
+    "label": "हिन्दी",
+    "countryName": "India",
+    "langCode": "hi-IN",
+    "flag": "🇮🇳"
+  },
+  {
+    "value": "LK",
+    "label": "සිංහල",
+    "countryName": "Sri Lanka",
+    "langCode": "si-LK",
+    "flag": "🇱🇰"
+  },
+  {
+    "value": "IR",
+    "label": "فارسی",
+    "countryName": "Iran",
+    "langCode": "fa-IR",
+    "flag": "🇮🇷"
+  },
+  {
+    "value": "TH",
+    "label": "ไทย",
+    "countryName": "Thailand",
+    "langCode": "th",
+    "flag": "🇹🇭"
+  },
+]
