@@ -211,7 +211,7 @@ function DictionaryEntry({dicData}) {
   console.log("dicData.lexicalItem: ", dicData.lexicalItem);
   
   return (
-    <div id="allowSelection">
+    <div style={{overflowY:"auto", height:"50vh"}} id="allowSelection">
       {dicData.phrase && <PhraseNo data={dicData} isShowedTran={true} />}
       {dicData.word && <WordNo data={dicData} isShowedTran={true} />}
       {dicData.sentence && <Sentence data={dicData} isShowedTran={true} />}

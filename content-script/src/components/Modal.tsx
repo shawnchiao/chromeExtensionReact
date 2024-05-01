@@ -1,7 +1,14 @@
 // @ts-nocheck
 import React, { useRef, useCallback } from "react";
 
-export const Modal = ({ index, modalId, children, closeModal, position, onDragStart }) => {
+export const Modal = ({
+  index,
+  modalId,
+  children,
+  closeModal,
+  position,
+  onDragStart,
+}) => {
   const modalRefs = useRef([]);
   const getModalRef = useCallback((index) => {
     if (!modalRefs.current[index]) {
@@ -10,8 +17,7 @@ export const Modal = ({ index, modalId, children, closeModal, position, onDragSt
     return modalRefs.current[index];
   }, []);
 
-
-  return(
+  return (
     <div
       id={`text-selection-modal-${index}`}
       ref={getModalRef(index)}
@@ -25,10 +31,13 @@ export const Modal = ({ index, modalId, children, closeModal, position, onDragSt
         maxWidth: "350px",
         width: "30%",
         minWidth: "280px",
-        maxHeight: "50vh",
-        overflow: "auto",
-        border: "5px solid #d1d1d1",
+        maxHeight: "55vh",
+        overflow: "hidden",
+        // border: "5px solid #d1d1d1",
         borderRadius: "15px",
+        boxShadow: `0 0 0 2px #d1d1d1, 
+        0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+        0 4px 6px -2px rgba(0, 0, 0, 0.05)`,
         fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`,
       }}
     >
@@ -45,7 +54,6 @@ export const Modal = ({ index, modalId, children, closeModal, position, onDragSt
           display: "flex",
           justifyContent: "flex-end",
           alignItems: "center",
-          paddingRight: "10px",
           zIndex: 2147483649,
           cursor: "move",
         }}
@@ -53,19 +61,46 @@ export const Modal = ({ index, modalId, children, closeModal, position, onDragSt
       >
         <button
           style={{
-            marginRight: "5px",
-            padding: "2px 5px",
-            fontSize: "15px",
+            boxSizing: "border-box",
+            display: "inline-block",
+            verticalAlign: "middle",
+            marginRight: "15px",
+            padding: "5px",
+            fontSize: "0",
+            lineHeight: "1",
             fontWeight: "900",
             border: "none",
             backgroundColor: "black",
             color: "white",
-            borderRadius: "20px",
+            borderRadius: "100%",
             cursor: "pointer",
           }}
           onClick={() => closeModal(modalId)}
         >
-          X
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 15 15"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <line
+              x1="3"
+              y1="3"
+              x2="12"
+              y2="12"
+              stroke="white"
+              stroke-width="2"
+            />
+            <line
+              x1="3"
+              y1="12"
+              x2="12"
+              y2="3"
+              stroke="white"
+              stroke-width="2"
+            />
+          </svg>
         </button>
       </div>
 

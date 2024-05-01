@@ -148,7 +148,7 @@ const Content = () => {
   }, [isDragging, onDrag, onDragEnd]);
 
   return (
-    <>
+    <div style={{all:"initial"}}>
       {showButton && (
         <LogoButton
           onClick={() => handleButtonClick(showButton)}
@@ -176,7 +176,7 @@ const Content = () => {
           />
         </Modal>
       ))}
-    </>
+    </div>
   );
 };
 
