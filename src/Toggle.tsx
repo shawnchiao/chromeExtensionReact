@@ -1,17 +1,19 @@
 // @ts-nocheck
-import React, { useState } from "react";
-import "./Toggle.css"; // Ensure the CSS file is in the same directory and named Toggle.css
+import React from 'react';
 
 const Toggle = ({ translateMode, onToggle }) => {
   return (
     <div
-      className={`toggle-container ${translateMode ? "toggled" : ""}`}
+      className={`w-14 h-8 flex items-center  rounded-full p-1 cursor-pointer 
+                  ${translateMode ? 'bg-blue-500' : 'bg-gray-300'}`}
       onClick={onToggle}
     >
-      <div className={`toggle-button ${translateMode ? "toggled" : ""}`}></div>
+      <div
+        className={`bg-white w-6 h-6 rounded-full shadow-md transform duration-300 ease-in-out 
+                    ${translateMode ? 'translate-x-6' : 'translate-x-0'}`}
+      ></div>
     </div>
   );
 };
-
 
 export default Toggle;

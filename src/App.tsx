@@ -68,7 +68,7 @@ const PopupComponent = () => {
           </p>
 
           {isLoggedin ? (
-            <button onClick={handleLogout}>Log out</button>
+            <button className="btn" onClick={handleLogout}>Log out</button>
           ) : (
             <LoginButton />
           )}
