@@ -74,23 +74,34 @@ const Content = () => {
       addDicData(modalId);
       fetchData(modalId, selectedText, contextSentence);
 
+      const initialX = modalPosition.x + 20; // offset from the logo button
+      const initialY = Math.max(0, modalPosition.y - 170); // offset upward, but not beyond the top of the viewport
+
+      // Ensure the modal does not open beyond the right edge of the screen
+      const constrainedX = Math.min(initialX, window.innerWidth - 370); // Assuming the modal width is 370px
+      const constrainedPosition = {
+        x: constrainedX,
+        y: initialY
+      };
+
       if (type === "modal") {
         if (modals.length === 0) {
-          setModals([{ id: modalId, position: modalPosition }]);
+          setModals([{ id: modalId, position: constrainedPosition }]);
         } else {
           const lastModal = modals[modals.length - 1];
           const newModalPosition = {
-            x: lastModal.position.x + 370,
-            y: lastModal.position.y,
+            x: Math.min(lastModal.position.x + 370, window.innerWidth - 370),
+            y: lastModal.position.y
           };
           setModals([...modals, { id: modalId, position: newModalPosition }]);
         }
       } else {
-        setModals([{ id: modalId, position: modalPosition }]);
+        setModals([{ id: modalId, position: constrainedPosition }]);
       }
     },
     [dicData, fetchData, modalPosition, modals, selectedText, contextSentence]
   );
+
 
   useEffect(() => {
     document.addEventListener("mouseup", handleMouseUp);
