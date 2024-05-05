@@ -14,13 +14,17 @@ const PopupComponent = () => {
   const [translateMode, setTranslateMode] = useState(false);
   const handleToggle = () => {
     setTranslateMode((prevMode) => !prevMode);
+    chrome.runtime.sendMessage({
+      type: "TOGGLE_TRANSLATE_MODE",
+      translateMode: !translateMode,
+    });
   };
   useEffect(() => {
     // Check if the authentication state is already stored in local storage
     chrome.storage.local.get(null, function (result) {
       console.log("result", result);
       SetIsLoggedin(result.isLoggedin);
-
+      setTranslateMode(result.translateMode);
       setUser(result.user);
     });
   }, []);

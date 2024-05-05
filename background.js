@@ -51,4 +51,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       console.log("User is logged out. User removed.", message.user);
     });
   }
+
+  if (message.type === "TOGGLE_TRANSLATE_MODE") {
+    chrome.storage.local.set({translateMode: message.translateMode}, () => {
+      console.log("Translate mode toggled to", message.translateMode);
+    });
+  }
+  if (message.type === "SELECT_LANGUAGE") {
+    chrome.storage.local.set({selectedLang: message.selectedLang}, () => {
+      console.log("Selected language set to", message.selectedLang);
+    });
+  }
 });
