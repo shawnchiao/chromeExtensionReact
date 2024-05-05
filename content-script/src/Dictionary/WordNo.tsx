@@ -1,6 +1,5 @@
 // @ts-nocheck
 
-
 function capitalizeFirstCharacter(str) {
   if (typeof str !== "string") {
     return ""; // Returns an empty string if the input is not a string
@@ -109,13 +108,15 @@ function WordNo({ data, isShowedTran }) {
             </div>
             {entry.definitions.map((def, defIndex) => (
               <div style={definitionContainerStyle} key={defIndex}>
-                <div
-                  style={{
-                    fontWeight: "700",
-                  }}
-                >
-                  {def.translation}
-                </div>
+                {isShowedTran && (
+                  <div
+                    style={{
+                      fontWeight: "700",
+                    }}
+                  >
+                    {def.translation}
+                  </div>
+                )}
                 <div style={definitionStyle}>
                   {capitalizeFirstCharacter(def.definition)}
                 </div>
@@ -134,4 +135,3 @@ function WordNo({ data, isShowedTran }) {
 }
 
 export default WordNo;
-

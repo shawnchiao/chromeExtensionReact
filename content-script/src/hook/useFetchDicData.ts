@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 export const useFetchDicData = (token) => {
   const [dicData, setDicData] = useState({});
@@ -12,6 +12,15 @@ export const useFetchDicData = (token) => {
       const updatedControllers = { ...abortControllers, [modalId]: controller };
       setAbortControllers(updatedControllers);
 
+      let translateInto;
+      const result = await new Promise((resolve) => {
+        chrome.storage.local.get("selectedLang", (state) => {
+          resolve(state.selectedLang); // Default to "zh-TW" if nothing is set
+        });
+      });
+      translateInto = result?.langCode || "zh-TW";
+
+      console.log("translateInto", translateInto);
       try {
         const response = await fetch(
           `https://5qspuywt86.execute-api.us-west-1.amazonaws.com/Prod/get-dic-data-for-extension`,
@@ -25,7 +34,7 @@ export const useFetchDicData = (token) => {
               lexicalItem: selectedText,
               contextSentence: contextSentence,
               gptProvider: "anthropic",
-              translateInto: "zh-TW",
+              translateInto: translateInto,
             }),
             signal: controller.signal,
           }

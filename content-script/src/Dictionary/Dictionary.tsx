@@ -1,5 +1,5 @@
 // @ts-nocheck
-
+import { useEffect, useState } from "react";
 import PhraseNo from "./PhraseNo";
 import WordNo from "./WordNo";
 import Sentence from "./Sentence";
@@ -201,24 +201,31 @@ const mockDataFromApi = {
 
 // Make sure the path is correct based on your project structure
 
-function DictionaryEntry({dicData}) {
+function DictionaryEntry({ dicData }) {
+  const [isShowedTran, setIsShowedTran] = useState(false);
+
+  useEffect(() => {
+    chrome.storage.local.get("translateMode", (result) => {
+      setIsShowedTran(result.translateMode);
+    });
+  }, []);
+
   if (!dicData) {
     return <LoadingSpinner />;
   }
-  console.log("dicData.phrase: ", dicData.phrase);
-  console.log("dicData.word: ", dicData.word);
-  console.log("dicData.sentence: ", dicData.sentence);
-  console.log("dicData.lexicalItem: ", dicData.lexicalItem);
-  
+  // console.log("dicData.phrase: ", dicData.phrase);
+  // console.log("dicData.word: ", dicData.word);
+  // console.log("dicData.sentence: ", dicData.sentence);
+  // console.log("dicData.lexicalItem: ", dicData.lexicalItem);
+  console.log("isShowedTran: ", isShowedTran);
   return (
-    <div style={{overflowY:"auto", height:"50vh"}} id="allowSelection">
-      {dicData.phrase && <PhraseNo data={dicData} isShowedTran={true} />}
-      {dicData.word && <WordNo data={dicData} isShowedTran={true} />}
-      {dicData.sentence && <Sentence data={dicData} isShowedTran={true} />}
-      {dicData.lexicalItem && <Context dicData={dicData} isShowedTran={true} />}
+    <div style={{ overflowY: "auto", height: "50vh" }} id="allowSelection">
+      {dicData.phrase && <PhraseNo data={dicData} isShowedTran={isShowedTran} />}
+      {dicData.word && <WordNo data={dicData} isShowedTran={isShowedTran} />}
+      {dicData.sentence && <Sentence data={dicData} isShowedTran={isShowedTran} />}
+      {dicData.lexicalItem && <Context dicData={dicData} isShowedTran={isShowedTran} />}
     </div>
   );
 }
-
 
 export default DictionaryEntry;

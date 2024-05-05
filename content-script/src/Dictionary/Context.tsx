@@ -97,16 +97,18 @@ const lexicalItemDefinition = ({ dicData, isShowedTran }) => {
             alignItems: "center",
           }}
         >
-          <div
-            style={{
-              backgroundColor: "#e7e7e7",
-              borderRadius: "10px",
-              padding: "5px",
-              lineHeight: "1",
-            }}
-          >
-            {dicData.translation}
-          </div>
+          {isShowedTran && (
+            <div
+              style={{
+                backgroundColor: "#e7e7e7",
+                borderRadius: "10px",
+                padding: "5px",
+                lineHeight: "1",
+              }}
+            >
+              {dicData.translation}
+            </div>
+          )}
           <div
             style={{
               backgroundColor: "#ecd4d4",
