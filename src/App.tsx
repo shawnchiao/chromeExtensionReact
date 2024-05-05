@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 import "./PopupComponent.css";
 import LoginButton from "./LoginButton";
 import Toggle from "./Toggle";
+import Button from "./component/Button";
 import Select from "./component/Select";
+import "./App.css";
 const PopupComponent = () => {
   const [isLoggedin, SetIsLoggedin] = useState(false);
   const [user, setUser] = useState(null);
@@ -36,41 +38,39 @@ const PopupComponent = () => {
   console.log("isLoggedin", isLoggedin);
   return (
     <div className="popup-container">
-      <header className="popup-header">
-        <img src="logo.png" alt="Logo" className="logo" />
-        <button className="settings-button">⚙️</button>
+      <header className="popup-header gap-2 font-semibold text-base bg-[#e48004] border-1  rounded-br-3xl text-white font-roboto border-[#e5ecec]">
+        <img src="images/logoT.png" alt="Logo" className="w-[1.8rem]" />
+        <p>Lingofloat</p>
+        {/* <button className="settings-button">⚙️</button> */}
       </header>
       <div className="popup-content">
         {isLoggedin && (
-          <section className="setup-section">
-            <Toggle translateMode={translateMode} onToggle={handleToggle} />
-            <div className="translation-section">
+          <section className="setup-section flex flex-col gap-2">
+            <div className=" flex flex-col gap-1">
+              <label>
+                {translateMode ? "Enable translation" : "Diable translation"}
+              </label>
+              <Toggle translateMode={translateMode} onToggle={handleToggle} />
+            </div>
+            <div
+              className={`select-animation flex flex-col gap-1 ${translateMode ? "show" : "hide"}`}
+            >
               <label htmlFor="language-select">
                 Translate selected text into
               </label>
               {translateMode && <Select />}
             </div>
-            <ul className="instructions-list">
-              <li>Click the DeepL icon</li>
-              <li>Click right on your mouse</li>
-              <li>
-                Use shortcut <kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>Y</kbd>
-              </li>
-            </ul>
-            <a href="/customize-shortcut" className="customize-shortcut-link">
-              Customize shortcut
-            </a>
           </section>
         )}
-        <section className="pro-section">
+        <section>
           <p>
             As a Pro user, you can translate full pages with a single click.
           </p>
 
           {isLoggedin ? (
-            <button className="btn" onClick={handleLogout}>Log out</button>
+            <Button text="Log out" onClick={handleLogout} />
           ) : (
-            <LoginButton />
+            <Button text="Log in"  onClick={()=>chrome.tabs.create({url: 'http://localhost:3000'})} />
           )}
 
           <p>{isLoggedin ? "has logged in" : "no logged in yet"}</p>

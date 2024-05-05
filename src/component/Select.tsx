@@ -24,7 +24,7 @@ const CountrySelect = () => {
 
 export default function App() {
   return (
-    <div className="App">
+    <div className="fadeInUp">
       <CountrySelect />
     </div>
   );
