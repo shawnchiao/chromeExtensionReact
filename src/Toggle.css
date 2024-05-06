@@ -18,9 +18,9 @@
   transition: transform 0.2s;
 }
 
-.toggle-container.toggled {
-  background-color: #4caf50; /* Green background when toggled on */
-}
+/* .toggle-container.toggled {
+  background-color: #4caf50; 
+} */
 
 .toggle-button.toggled {
   transform: translateX(1.7rem); /* Move button to the right when toggled */

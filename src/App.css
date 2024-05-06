@@ -57,3 +57,22 @@
   transform: translateY(-10px);
 }
 
+/* In src/styles.css or a similar file */
+/* src/styles.css */
+@font-face {
+  font-family: 'CerebriSans';
+  src: url('/fonts/Cerebri Sans Bold.ttf') format('truetype');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'CerebriSans';
+  src: url('/fonts/Cerebri Sans SemiBold.ttf') format('truetype');
+  font-weight: 600;  /* SemiBold is often considered 600 weight */
+}
+@font-face {
+  font-family: 'CerebriSans';
+  src: url('/fonts/Cerebri Sans Book.ttf') format('truetype');
+  font-weight: 400;  /* SemiBold is often considered 600 weight */
+}
+

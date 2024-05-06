@@ -25,12 +25,22 @@ const CountrySelect = () => {
  console.log("selectedOption", selectedOption);
   return (
     <Select
-      styles={{
-        control: (baseStyles, state) => ({
-          ...baseStyles,
-          width: "100%",
-        }),
-      }}
+    styles={{
+      control: (base, state) => ({
+        ...base,
+        width: "100%",
+        borderColor: state.isFocused ? '#f59e0b' : base.borderColor, // Change border color on focus
+        boxShadow: state.isFocused ? '0 0 0 1px #f59e0b' : 'none', // Optional: add a shadow to highlight focus
+        '&:hover': {
+          borderColor: state.isFocused ? '#f59e0b' : '#8a8a8a', // Change border color on hover
+        }
+      }),
+      option: (base, state) => ({
+        ...base,
+        backgroundColor: state.isFocused ? '#ffe8a9' : (state.isSelected ? '#ffbb00' : base.backgroundColor),
+        color: state.isFocused ? 'black' : (state.isSelected ? 'white':"black" )
+      })
+    }}
       value={selectedOption}
       defaultValue={selectedOption}
       onChange={(e)=>handleChange(e)}

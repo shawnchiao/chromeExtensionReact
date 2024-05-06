@@ -5,7 +5,7 @@ const Toggle = ({ translateMode, onToggle }) => {
   return (
     <div
       className={`w-14 h-8 flex items-center  rounded-full p-1 cursor-pointer 
-                  ${translateMode ? 'bg-blue-500' : 'bg-gray-300'}`}
+                  ${translateMode ? 'bg-[#ffbb00]' : 'bg-gray-300'}`}
       onClick={onToggle}
     >
       <div
