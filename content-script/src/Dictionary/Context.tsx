@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from "react";
+import PlaySoundIcon from "../components/PlaySoundIcon";
 function capitalizeFirstCharacter(str) {
   if (typeof str !== "string") {
     return ""; // Returns an empty string if the input is not a string
@@ -135,7 +136,7 @@ const lexicalItemDefinition = ({ dicData, isShowedTran }) => {
             ...regions,
             display: "grid",
             // gridTemplateColumns: "auto 1fr 1fr",
-            gridTemplateColumns: "auto auto auto",
+            gridTemplateColumns: "auto auto auto auto",
             alignItems: "center",
             columnGap: "10px",
           }}
@@ -147,7 +148,10 @@ const lexicalItemDefinition = ({ dicData, isShowedTran }) => {
                 {key === "american" && "US"}
                 {key === "australian" && "AU"}:
               </span>
-              <span style={{ justifySelf: "center" }}>{value}</span>
+              {/* <div style={{ display: "flex", alignItems: "center", justifySelf: "center", gap:"auto" }}> */}
+                <span style={{ justifySelf: "right" }}>{value}</span>
+                <PlaySoundIcon style={{ marginLeft: "-4px" }} size="24px" />
+              {/* </div> */}
               <span style={{ justifySelf: "left" }}>
                 {dicData.regionAndFrequency[key]}/10
               </span>
