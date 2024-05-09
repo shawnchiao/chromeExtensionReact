@@ -65,7 +65,7 @@ export const Modal = ({
             display: "inline-block",
             verticalAlign: "middle",
             marginRight: "15px",
-            padding: "5px",
+            padding: "3px",
             fontSize: "0",
             lineHeight: "1",
             fontWeight: "900",

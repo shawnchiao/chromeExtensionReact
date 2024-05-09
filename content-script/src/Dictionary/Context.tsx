@@ -150,7 +150,9 @@ const lexicalItemDefinition = ({ dicData, isShowedTran }) => {
               </span>
               {/* <div style={{ display: "flex", alignItems: "center", justifySelf: "center", gap:"auto" }}> */}
                 <span style={{ justifySelf: "right" }}>{value}</span>
-                <PlaySoundIcon style={{ marginLeft: "-4px" }} size="24px" />
+                <PlaySoundIcon style={{ marginLeft: "-4px", visibility: key === "american" ||  key === "british" ? "visible" : "hidden" }} size="24px"
+                  url="https://www.oxfordlearnersdictionaries.com/media/english/us_pron/d/dur/durin/during__us_1.mp3"
+                />
               {/* </div> */}
               <span style={{ justifySelf: "left" }}>
                 {dicData.regionAndFrequency[key]}/10

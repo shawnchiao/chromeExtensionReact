@@ -28,6 +28,24 @@ console.log('background.js');
 
 //   });
 
+
+async function playSound(source ) {
+  await createOffscreen();
+  await chrome.runtime.sendMessage({ play: { source} });
+}
+
+// Create the offscreen document if it doesn't already exist
+async function createOffscreen() {
+  if (await chrome.offscreen.hasDocument()) return;
+  await chrome.offscreen.createDocument({
+      url: 'offscreen.html',
+      reasons: ['AUDIO_PLAYBACK'],
+      justification: 'testing' // details for using the API
+  });
+}
+
+
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('message', message);
   if (message.action === "toLoginFromContent") {
@@ -62,4 +80,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       console.log("Selected language set to", message.selectedLang);
     });
   }
+  if (message.type === "PLAY_AUDIO") {
+   playSound(message.url);
+}
 });

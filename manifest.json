@@ -10,20 +10,29 @@
   "icons": {},
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content-script/src/main.tsx"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content-script/src/main.tsx"
+      ],
       "media": []
     }
   ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; media-src 'self' https://www.oxfordlearnersdictionaries.com;"
+  },
   "permissions": [
-    "storage"
-  ], 
+    "storage",
+    "offscreen"
+  ],
   "background": {
     "service_worker": "background.js"
   },
   "web_accessible_resources": [
     {
       "resources": [
+        "offscreen.html",
         "images/logoT.png"
       ],
       "matches": [
