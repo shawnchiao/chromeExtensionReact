@@ -20,7 +20,7 @@
     }
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; media-src 'self' https://www.oxfordlearnersdictionaries.com;"
+    "extension_pages": "script-src 'self'; object-src 'self'; media-src 'self' https://audio.oxforddictionaries.com;"
   },
   "permissions": [
     "storage",

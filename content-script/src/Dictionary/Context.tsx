@@ -151,7 +151,7 @@ const lexicalItemDefinition = ({ dicData, isShowedTran }) => {
               {/* <div style={{ display: "flex", alignItems: "center", justifySelf: "center", gap:"auto" }}> */}
                 <span style={{ justifySelf: "right" }}>{value}</span>
                 <PlaySoundIcon style={{ marginLeft: "-4px", visibility: key === "american" ||  key === "british" ? "visible" : "hidden" }} size="24px"
-                  url="https://www.oxfordlearnersdictionaries.com/media/english/us_pron/d/dur/durin/during__us_1.mp3"
+                  url={`https://audio.oxforddictionaries.com/en/mp3/${dicData.lexicalItem}_${key === "british" ? "gb" : "us"}_1.mp3`}
                 />
               {/* </div> */}
               <span style={{ justifySelf: "left" }}>
