@@ -12,9 +12,16 @@ function capitalizeFirstCharacter(str) {
 
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+const keyMapping = {
+  "american": "US",
+  "british": "UK",
+  "australian": "AU"
+};
+
 const lexicalItemDefinition = ({ dicData, isShowedTran }) => {
   const formatRelations = (relations) => relations.join(", ");
-
+  console.log("dicData", dicData);
   const containerStyle = {
     padding: "40px 20px",
     maxWidth: "600px",
@@ -150,8 +157,8 @@ const lexicalItemDefinition = ({ dicData, isShowedTran }) => {
               </span>
               {/* <div style={{ display: "flex", alignItems: "center", justifySelf: "center", gap:"auto" }}> */}
                 <span style={{ justifySelf: "right" }}>{value}</span>
-                <PlaySoundIcon style={{ marginLeft: "-4px", visibility: key === "american" ||  key === "british" ? "visible" : "hidden" }} size="24px"
-                  url={`https://audio.oxforddictionaries.com/en/mp3/${dicData.lexicalItem}_${key === "british" ? "gb" : "us"}_1.mp3`}
+                <PlaySoundIcon style={{ marginLeft: "-4px" }} size="24px"
+                  url={dicData.audioData[keyMapping[key]][0]}
                 />
               {/* </div> */}
               <span style={{ justifySelf: "left" }}>

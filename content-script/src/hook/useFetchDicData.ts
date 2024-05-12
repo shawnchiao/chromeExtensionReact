@@ -43,6 +43,7 @@ export const useFetchDicData = (token) => {
           throw new Error(`Error: ${response.statusText}`);
         }
         const data = await response.json();
+        console.log("data from api", data);
         setDicData((oldData) => ({ ...oldData, [modalId]: data }));
       } catch (error) {
         if (error.name === "AbortError") {

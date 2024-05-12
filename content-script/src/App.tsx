@@ -181,7 +181,7 @@ const Content = () => {
               dicData[modal.id] &&
               dicData[modal.id].content &&
               dicData[modal.id].content[0]
-                ? JSON.parse(dicData[modal.id].content[0].text)
+                ? {...JSON.parse(dicData[modal.id].content[0].text), audioData: dicData[modal.id].audioData}
                 : null
             }
           />

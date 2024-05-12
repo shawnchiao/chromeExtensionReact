@@ -1,4 +1,4 @@
-function checkURL(url) {
+const checkURL = async(url) =>{
     fetch(url)
         .then(response => {
             if (response.ok) {
@@ -16,4 +16,16 @@ function checkURL(url) {
 }
 
 // Usage
-checkURL("https://audio.oxforddictionaries.com/en/mp3/liked_us_1.mp3");
+checkURL("https://audio.oxforddictionaries.com/en/mp3/like_us_1.mp3");
+console.log("hihi")
+checkURL("https://audio.oxforddictionaries.com/en/mp3/like_us_2.mp3");
+checkURL("https://audio.oxforddictionaries.com/en/mp3/like_gb_1.mp3");
+checkURL("https://audio.oxforddictionaries.com/en/mp3/like_gb_2.mp3");
+checkURL("https://audio.oxforddictionaries.com/en/mp3/like_us_1.mp3");
+checkURL("https://audio.oxforddictionaries.com/en/mp3/like_us_2.mp3");
+checkURL("https://audio.oxforddictionaries.com/en/mp3/like_gb_1.mp3");
+checkURL("https://audio.oxforddictionaries.com/en/mp3/like_gb_2.mp3");
+checkURL("https://audio.oxforddictionaries.com/en/mp3/like_us_1.mp3");
+checkURL("https://audio.oxforddictionaries.com/en/mp3/like_us_2.mp3");
+checkURL("https://audio.oxforddictionaries.com/en/mp3/like_gb_1.mp3");
+checkURL("https://audio.oxforddictionaries.com/en/mp3/like_gb_2.mp3");
