@@ -1,5 +1,6 @@
 // @ts-nocheck
-
+import React from "react";
+import PlaySoundIcon from "../components/PlaySoundIcon";
 function capitalizeFirstCharacter(str) {
   if (typeof str !== "string") {
     return ""; // Returns an empty string if the input is not a string
@@ -11,7 +12,18 @@ function capitalizeFirstCharacter(str) {
 
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
+const regions = {
+  fontSize: "14px",
+  color: "#666",
+  fontWeight: "600",
+  background: "#fff1dd",
+  display: "flex",
+  flexDirection: "column",
+  padding: "15px",
+  gap: "1rem",
+  borderRadius: "10px",
+  marginTop: "10px",
+};
 // Define the style objects
 const containerStyle = {
   maxWidth: "350px",
@@ -77,27 +89,41 @@ function WordNo({ data, isShowedTran }) {
     flexDirection: "column",
     gap: "10px",
   };
-
+  const keyMapping = {
+    "american": "US",
+    "british": "UK",
+    "australian": "AU"
+  }
   return (
     <div style={containerStyle}>
       <div style={{ paddingBottom: "20px" }}>
         <div style={phraseStyle}>{capitalizeFirstCharacter(data.word)}</div>
         <div
           style={{
-            display: "flex",
-            padding: "0 11px",
-            flexDirection: "column",
-            gap: "0.2rem",
+            ...regions,
+            display: "grid",
+            justifyContent: "start",
+            // gridTemplateColumns: "auto 1fr 1fr",
+            gridTemplateColumns: "auto auto auto",
+            alignItems: "center",
+            columnGap: "1.3rem",
           }}
         >
-          {Object.entries(data.phoneticSymbols).map(([key, value]) => {
-            const regionCode = capitalizeFirstCharacter(key) || "Other";
-            return (
-              <span style={{ marginLeft: "5px" }} key={key}>
-                {regionCode}:<span style={{ marginLeft: "10px" }}>{value}</span>
+          {Object.entries(data.phoneticSymbols).map(([key, value]) => (
+            <React.Fragment key={key}>
+              <span style={{ justifySelf: "right" }}>
+                {key === "british" && "UK"}
+                {key === "american" && "US"}
+                {key === "australian" && "AU"}:
               </span>
-            );
-          })}
+              {/* <div style={{ display: "flex", alignItems: "center", justifySelf: "center", gap:"auto" }}> */}
+                <span style={{ justifySelf: "right" }}>{value}</span>
+                <PlaySoundIcon style={{ marginLeft: "-4px" }} size="24px"
+                  url={data.audioData[keyMapping[key]][0]}
+                />
+              {/* </div> */}
+            </React.Fragment>
+          ))}
         </div>
       </div>
       <div style={sectionStyle}>
