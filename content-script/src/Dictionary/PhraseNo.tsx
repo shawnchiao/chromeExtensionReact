@@ -1,4 +1,6 @@
 // @ts-nocheck
+import React from "react";
+import PlaySoundIcon from "../components/PlaySoundIcon";
 function capitalizeFirstCharacter(str) {
   if (typeof str !== "string") {
     return ""; // Returns an empty string if the input is not a string
@@ -10,7 +12,11 @@ function capitalizeFirstCharacter(str) {
 
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
+const keyMapping = {
+  "american": "US",
+  "british": "UK",
+  "australian": "AU"
+};
 // Define the style objects
 const containerStyle = {
   maxWidth: '350px',
@@ -93,9 +99,21 @@ const synonymAntonymRowStyle = {
   display: 'flex',
   justifyContent: 'space-around'
 };
-
+const regions = {
+  fontSize: "14px",
+  color: "#666",
+  fontWeight: "600",
+  background: "#fff1dd",
+  display: "flex",
+  flexDirection: "column",
+  padding: "15px",
+  gap: "10px",
+  borderRadius: "10px",
+  marginTop: "10px",
+};
 // The component
 function PhraseNo({ data, isShowedTran }) {
+  console.log("data in PhraseNo", data);
   return (
     <div style={containerStyle}>
       <div style={phraseStyle}>{data.phrase}</div>
@@ -106,8 +124,8 @@ function PhraseNo({ data, isShowedTran }) {
         {data.definition}
       </div>
       <div style={sectionStyle}>
-        <div style={titleStyle}>Region & Frequency</div>
-        <div style={frequencyStyle}>
+        <div style={titleStyle}>Regional pronunciation and popularity</div>
+        {/* <div style={frequencyStyle}>
           {Object.entries(data.regionAndFrequency).map(([key, value]) => {
             const regionCode = capitalizeFirstCharacter(key) || "Other";
             return (
@@ -116,6 +134,35 @@ function PhraseNo({ data, isShowedTran }) {
               </span>
             );
           })}
+        </div> */}
+         <div
+          style={{
+            ...regions,
+            display: "grid",
+            // gridTemplateColumns: "auto 1fr 1fr",
+            gridTemplateColumns: "auto auto auto",
+            alignItems: "center",
+            columnGap: "10px",
+          }}
+        >
+          {Object.entries(data.regionAndFrequency).map(([key, value]) => (
+            <React.Fragment key={key}>
+              <span style={{ justifySelf: "right" }}>
+                {key === "british" && "UK"}
+                {key === "american" && "US"}
+                {key === "australian" && "AU"}:
+              </span>
+              {/* <div style={{ display: "flex", alignItems: "center", justifySelf: "center", gap:"auto" }}> */}
+               
+                <PlaySoundIcon style={{ justifySelf: "center" }} size="24px"
+                  url={data.audioData[keyMapping[key]][0]}
+                />
+              {/* </div> */}
+              <span style={{ justifySelf: "left" }}>
+                {data.regionAndFrequency[key]}/10
+              </span>
+            </React.Fragment>
+          ))}
         </div>
       </div>
       <div style={sectionStyle}>
