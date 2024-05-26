@@ -7,7 +7,7 @@ export function getFullSentence(selection) {
   var regex = /(?<=\s|^)[^.!?]+(?:\.(?!\s)[^.!?]+)*(?:[.!?](?=\s|$)|$)/g
 
   var sentences = fullText.match(regex) || [];
-  // console.log('sentences', sentences);
+  console.log('sentences full context', sentences);
   for (var i = 0; i < sentences.length; i++) {
     if (sentences[i].includes(selection.trim())) {
       return sentences[i].trim();

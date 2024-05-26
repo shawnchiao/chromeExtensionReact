@@ -37,6 +37,9 @@ const Content = () => {
     }
     const text = window.getSelection().toString().trim();
     const selection = window.getSelection().toString();
+    console.log("text", text);
+    console.log("selection", selection);
+
     if (text) {
       setSelectedText(text);
       setContextSentence(getFullSentence(selection));

@@ -1,7 +1,7 @@
 // @ts-nocheck
-
+import React from "react";
 import "./phraseCo.css";
-
+import PlaySoundIcon from "../components/PlaySoundIcon";
 function capitalizeFirstCharacter(str) {
   if (typeof str !== "string") {
     return ""; // Returns an empty string if the input is not a string
@@ -13,7 +13,11 @@ function capitalizeFirstCharacter(str) {
 
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
+const keyMapping = {
+  "american": "US",
+  "british": "UK",
+  "australian": "AU"
+};
 const containerStyles = {
   maxWidth: '350px',
   margin: '20px auto',
@@ -67,11 +71,47 @@ const contextItemStyles = {
   backgroundColor: '#ecf0f1'
 };
 
-
+const regions = {
+  fontSize: "14px",
+  color: "#666",
+  fontWeight: "600",
+  background: "#fff1dd",
+  display: "flex",
+  flexDirection: "column",
+  padding: "15px",
+  gap: "10px",
+  borderRadius: "10px",
+  marginTop: "10px",
+};
 function Sentence({ data, isShowedTran }) {
+  console.log("data in sentence", data);
   return (
     <div style={containerStyles}>
       <div style={phraseStyles}>{data.sentence}</div>
+      <div
+          style={{
+            ...regions,
+            display: "grid",
+            // gridTemplateColumns: "auto 1fr 1fr",
+            gridTemplateColumns: "auto auto",
+            alignItems: "center",
+            columnGap: "10px",
+          }}
+        >
+          {Object.entries(data.audioData).map(([key, value]) => (
+            <React.Fragment key={key}>
+              <span style={{ justifySelf: "center" }}>
+              {key}
+              </span>
+              {/* <div style={{ display: "flex", alignItems: "center", justifySelf: "center", gap:"auto" }}> */}
+               
+                <PlaySoundIcon style={{ justifySelf: "left" }} size="24px"
+                  url={data.audioData[key][0]}
+                />
+              {/* </div> */}
+            </React.Fragment>
+          ))}
+        </div>
       {isShowedTran && <div style={translationStyles}>{data.translation}</div>}
       <div style={sectionStyles}>
         <div style={titleStyles}>Overall Explanation</div>
