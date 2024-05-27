@@ -52,7 +52,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return
   }
   if (message.type === "LOGIN") {
-    chrome.storage.local.set({isLoggedin: message.isLoggedin, token: message.token, user: message.user}, () => {
+    chrome.storage.local.set({isLoggedin: message.isLoggedin, accessToken: message.accessToken, refreshToken:message.refreshToken, user: message.user}, () => {
       // console.log("User is logged in. Token stored.", message.token);
       // console.log("User is logged in. User stored.", message.user);
       console.log("storage updated complete", message);
@@ -63,8 +63,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.type === "LOGOUT") {
-    chrome.storage.local.set({isLoggedin: message.isLoggedin, token: message.token, user: message.user}, () => {
-      console.log("User is logged out. Token removed.", message.token);
+    chrome.storage.local.set({isLoggedin: message.isLoggedin, accessToken: message.accessToken, refreshToken:message.refreshToken, user: message.user}, () => {
+      console.log("User is logged out. Token removed.", message.accessToken);
+      console.log("User is logged out. Token removed.", message.refreshToken);
       console.log("User is logged out. User removed.", message.user);
     });
   }

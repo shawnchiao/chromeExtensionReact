@@ -1,6 +1,6 @@
+// @ts-nocheck
 /// <reference types="chrome" />
 /// <reference types="vite-plugin-svgr/client" />
-// @ts-nocheck
 import React, { useState, useEffect, useCallback } from "react";
 import LogoButton from "./components/LogoButton";
 import Modal from "./components/Modal";
@@ -11,7 +11,7 @@ import { useAuth } from "./hook/useAuth";
 import { useFetchDicData } from "./hook/useFetchDicData";
 const Content = () => {
   // Auth related states
-  const { user, isLoggedin, token } = useAuth();
+  const { user, isLoggedin, refreshToken, accessToken } = useAuth();
   // Text selection related states
   const [selectedText, setSelectedText] = useState("");
   const [contextSentence, setContextSentence] = useState("");
@@ -26,7 +26,7 @@ const Content = () => {
   const [draggedModalIndex, setDraggedModalIndex] = useState(null);
   // Data fetching related states
   const { dicData, fetchData, abortFetch, addDicData, removeDicData } =
-    useFetchDicData(token);
+    useFetchDicData(accessToken);
 
   const handleMouseUp = useCallback((event) => {
     if (

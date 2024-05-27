@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 export const useAuth = () => {
   const [user, setUser] = useState();
   const [isLoggedin, setIsLoggedin] = useState(false);
-  const [token, setToken] = useState();
+  const [accessToken, setAccessToken] = useState();
+  const [refreshToken, setRefreshToken] = useState();
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -14,7 +15,8 @@ export const useAuth = () => {
         chrome.runtime.sendMessage({
           type: "LOGIN",
           isLoggedin: event.data.user && true,
-          token: event.data.token,
+          accessToken: event.data.accessToken,
+          refreshToken: event.data.refreshToken,
           user: event.data.user,
         });
       }
@@ -31,12 +33,12 @@ export const useAuth = () => {
       chrome.storage.local.get(null, (result) => {
         setIsLoggedin(result.isLoggedin);
         setUser(result.user);
-        setToken(result.token);
+        setAccessToken(result.accessToken);
+        setRefreshToken(result.refreshToken);
       });
     };
 
     const handleStorageChange = (changes, areaName) => {
-
       console.log("All storage changes:", changes);
       if (areaName === "local") {
         if (changes.isLoggedin) {
@@ -45,8 +47,11 @@ export const useAuth = () => {
         if (changes.user) {
           setUser(changes.user.newValue);
         }
-        if (changes.token) {
-          setToken(changes.token.newValue);
+        if (changes.accessToken) {
+          setAccessToken(changes.accessToken.newValue);
+        }
+        if (changes.refreshToken) {
+          setRefreshToken(changes.refreshToken.newValue);
         }
       }
     };
@@ -59,6 +64,5 @@ export const useAuth = () => {
     };
   }, []);
 
-  return { user, isLoggedin, token };
+  return { user, isLoggedin, accessToken, refreshToken };
 };
-
