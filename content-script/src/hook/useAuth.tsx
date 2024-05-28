@@ -6,7 +6,7 @@ export const useAuth = () => {
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [accessToken, setAccessToken] = useState();
   const [refreshToken, setRefreshToken] = useState();
-
+  const [expiresAt, setExpiresAt] = useState();
   useEffect(() => {
     const handleMessage = (event) => {
       if (event.origin !== "http://localhost:3000") return;
@@ -17,6 +17,7 @@ export const useAuth = () => {
           isLoggedin: event.data.user && true,
           accessToken: event.data.accessToken,
           refreshToken: event.data.refreshToken,
+          expiresAt: event.data.expiresAt,
           user: event.data.user,
         });
       }
@@ -35,6 +36,7 @@ export const useAuth = () => {
         setUser(result.user);
         setAccessToken(result.accessToken);
         setRefreshToken(result.refreshToken);
+        setExpiresAt(result.expiresAt);
       });
     };
 
@@ -53,6 +55,9 @@ export const useAuth = () => {
         if (changes.refreshToken) {
           setRefreshToken(changes.refreshToken.newValue);
         }
+        if (changes.expiresAt) {
+          setExpiresAt(changes.expiresAt.newValue);
+        }
       }
     };
 
@@ -64,5 +69,5 @@ export const useAuth = () => {
     };
   }, []);
 
-  return { user, isLoggedin, accessToken, refreshToken };
+  return { user, isLoggedin, accessToken, refreshToken, expiresAt };
 };

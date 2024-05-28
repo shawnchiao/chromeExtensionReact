@@ -45,6 +45,46 @@ async function createOffscreen() {
 
 
 
+
+function refreshAccessToken() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get(['refreshToken'], (result) => {
+      const refreshToken = result.refreshToken;
+      if (refreshToken) {
+        fetch('dev-5gdulzrjlzzfplri.us.auth0.com', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            grant_type: 'refresh_token',
+            client_id: 'lSGPj0zEVKvepFST5aZPi0z0zbZGvlzR',
+            refresh_token: refreshToken,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("data", data);
+            const newAccessToken = data.access_token;
+            const newRefreshToken = data.refresh_token;
+            chrome.storage.local.set({ accessToken: newAccessToken, refreshToken: newRefreshToken }, () => {
+              console.log('Access token refreshed');
+              resolve(newAccessToken);
+            });
+          })
+          .catch((error) => {
+            console.error('Error refreshing access token:', error);
+            reject(error);
+          });
+      } else {
+        reject(new Error('Refresh token not found'));
+      }
+    });
+  });
+}
+
+
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('message', message);
   if (message.action === "toLoginFromContent") {
@@ -52,7 +92,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return
   }
   if (message.type === "LOGIN") {
-    chrome.storage.local.set({isLoggedin: message.isLoggedin, accessToken: message.accessToken, refreshToken:message.refreshToken, user: message.user}, () => {
+    chrome.storage.local.set({isLoggedin: message.isLoggedin, accessToken: message.accessToken, refreshToken:message.refreshToken, user: message.user, expiresAt: message.expiresAt}, () => {
       // console.log("User is logged in. Token stored.", message.token);
       // console.log("User is logged in. User stored.", message.user);
       console.log("storage updated complete", message);
@@ -63,7 +103,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.type === "LOGOUT") {
-    chrome.storage.local.set({isLoggedin: message.isLoggedin, accessToken: message.accessToken, refreshToken:message.refreshToken, user: message.user}, () => {
+    chrome.storage.local.set({isLoggedin: message.isLoggedin, accessToken: message.accessToken, refreshToken:message.refreshToken, user: message.user, expiresAt: message.expiresAt}, () => {
       console.log("User is logged out. Token removed.", message.accessToken);
       console.log("User is logged out. Token removed.", message.refreshToken);
       console.log("User is logged out. User removed.", message.user);

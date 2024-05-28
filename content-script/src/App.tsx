@@ -11,7 +11,7 @@ import { useAuth } from "./hook/useAuth";
 import { useFetchDicData } from "./hook/useFetchDicData";
 const Content = () => {
   // Auth related states
-  const { user, isLoggedin, refreshToken, accessToken } = useAuth();
+  const { user, isLoggedin, refreshToken, accessToken, expiresAt } = useAuth();
   // Text selection related states
   const [selectedText, setSelectedText] = useState("");
   const [contextSentence, setContextSentence] = useState("");
@@ -75,6 +75,10 @@ const Content = () => {
       const modalId = uuidv4();
       setShowButton(false);
       addDicData(modalId);
+      const currentTime = Date.now();
+      if (currentTime > expiresAt) {
+        refreshToken();
+      }
       fetchData(modalId, selectedText, contextSentence);
 
       const initialX = modalPosition.x + 20; // offset from the logo button
