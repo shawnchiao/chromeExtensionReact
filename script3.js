@@ -8,12 +8,14 @@ const refreshAccessToken = async () => {
           body: JSON.stringify({
             grant_type: 'refresh_token',
             client_id: 'lSGPj0zEVKvepFST5aZPi0z0zbZGvlzR',
-            refresh_token: 'v1.Mppsy3pzYkpA6lzv8vRK51Hcd8weezja0PJg4MlsA4zg2BNIcIbbu7R7R1BnJCs_385urZlzBdJFCM--BK24298'
+            refresh_token: 'v1.MVyahH49E1HrBQn6FlPS-5XVYzNeVWxuvN4mCk955JGj5J7wzmtGGwMwJ5LxN8Nw9SHCQ7iNG27YV3eCD4DOgMU'
           }),
         });
         const data = await result.json();
         console.log('refresh token data', data);
-        return data;
+        const expiresAt = Date.now() + data.expires_in * 1000 - 1000;
+
+        return {...data, expiresAt};
       }
 
       refreshAccessToken();

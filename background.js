@@ -46,42 +46,6 @@ async function createOffscreen() {
 
 
 
-function refreshAccessToken() {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get(['refreshToken'], (result) => {
-      const refreshToken = result.refreshToken;
-      if (refreshToken) {
-        fetch('dev-5gdulzrjlzzfplri.us.auth0.com', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            grant_type: 'refresh_token',
-            client_id: 'lSGPj0zEVKvepFST5aZPi0z0zbZGvlzR',
-            refresh_token: refreshToken,
-          }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("data", data);
-            const newAccessToken = data.access_token;
-            const newRefreshToken = data.refresh_token;
-            chrome.storage.local.set({ accessToken: newAccessToken, refreshToken: newRefreshToken }, () => {
-              console.log('Access token refreshed');
-              resolve(newAccessToken);
-            });
-          })
-          .catch((error) => {
-            console.error('Error refreshing access token:', error);
-            reject(error);
-          });
-      } else {
-        reject(new Error('Refresh token not found'));
-      }
-    });
-  });
-}
 
 
 
@@ -122,5 +86,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   if (message.type === "PLAY_AUDIO") {
    playSound(message.url);
+}
+if (message.type === "TOUCH_BASE") {
+  console.log("TOUCH_BASE")
+  chrome.storage.local.get(null, (result) => {
+    console.log("Current storage state post-update:", result);
+  });
 }
 });

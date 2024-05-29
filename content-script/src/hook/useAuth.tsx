@@ -7,6 +7,12 @@ export const useAuth = () => {
   const [accessToken, setAccessToken] = useState();
   const [refreshToken, setRefreshToken] = useState();
   const [expiresAt, setExpiresAt] = useState();
+
+
+
+
+
+
   useEffect(() => {
     const handleMessage = (event) => {
       if (event.origin !== "http://localhost:3000") return;
@@ -21,7 +27,19 @@ export const useAuth = () => {
           user: event.data.user,
         });
       }
+
+      if (event.data.type === "touchBase") {
+        chrome.storage.local.get(null, (result) => {
+          window.postMessage({
+            type: "syncAuthData",
+            accessToken: result.accessToken,
+            refreshToken: result.refreshToken,
+            expiresAt: result.expiresAt,
+          }, "http://localhost:3000");
+        });
+      }
     };
+    
 
     window.addEventListener("message", handleMessage);
     return () => {
