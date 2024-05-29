@@ -9,6 +9,7 @@ import Dictionary from "./Dictionary/Dictionary";
 import { getFullSentence } from "./utils/textHelpers";
 import { useAuth } from "./hook/useAuth";
 import { useFetchDicData } from "./hook/useFetchDicData";
+import {refreshTokenHandler} from "./utils/refreshTokenHandler";
 const Content = () => {
   // Auth related states
   const { user, isLoggedin, refreshToken, accessToken, expiresAt } = useAuth();
@@ -53,6 +54,7 @@ const Content = () => {
     }
   }, []);
 
+
   const closeModal = useCallback(
     (modalId) => {
       console.log("clicking close button");
@@ -64,7 +66,7 @@ const Content = () => {
   );
 
   const handleButtonClick = useCallback(
-    (type) => {
+    async (type) => {
       if (!isLoggedin) {
         chrome.runtime.sendMessage({
           action: "toLoginFromContent",
@@ -77,7 +79,19 @@ const Content = () => {
       addDicData(modalId);
       const currentTime = Date.now();
       if (currentTime > expiresAt) {
-        refreshToken();
+       const newAuthData = await refreshTokenHandler(refreshToken);
+        console.log('newAuthData', newAuthData);
+        chrome.storage.local.set({
+          accessToken: newAuthData.access_token,
+          refreshToken: newAuthData.refresh_token,
+          expiresAt: newAuthData.expiresAt 
+        });
+        window.postMessage({
+          type: "syncAuthData",
+          accessToken: newAuthData.access_token,
+          refreshToken: newAuthData.refresh_token,
+          expiresAt: newAuthData.expiresAt,
+        }, "http://localhost:3000");
       }
       fetchData(modalId, selectedText, contextSentence);
 
