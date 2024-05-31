@@ -1,6 +1,7 @@
 console.log('background.js');
 
 
+
 // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 //     // if (message.type === 'AUTH_STATE_CHANGED') {
@@ -93,4 +94,20 @@ if (message.type === "TOUCH_BASE") {
     console.log("Current storage state post-update:", result);
   });
 }
+// if (message.type === "REFRESH_TOKEN") {
+//   console.log("REFRESH_TOKEN")
+//   const newAuthData = await refreshTokenHandler(refreshToken);
+//   console.log('newAuthData', newAuthData);
+//   chrome.storage.local.set({
+//     accessToken: newAuthData.access_token,
+//     refreshToken: newAuthData.refresh_token,
+//     expiresAt: newAuthData.expiresAt 
+//   });
+//   sendResponse({status: 'success', detail: 'Token refreshed.'});
+// }
 });
+
+
+
+
+

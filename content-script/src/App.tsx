@@ -29,6 +29,29 @@ const Content = () => {
   const { dicData, fetchData, abortFetch, addDicData, removeDicData } =
     useFetchDicData(accessToken);
 
+
+    function fetchDataWithToken(modalId, selectedText, contextSentence) {
+      chrome.runtime.sendMessage({type: "REFRESH_TOKEN"}, response => {
+        console.log('response', response);
+          if (response.status === 'success') {
+              fetchData(modalId, selectedText, contextSentence);
+              window.postMessage({
+                type: "syncAuthData",
+                accessToken: newAuthData.access_token,
+                refreshToken: newAuthData.refresh_token,
+                expiresAt: newAuthData.expiresAt,
+              }, "http://localhost:3000");
+
+          } else {
+              console.error('Error fetching token:', response.error);
+          }
+      });
+  }
+  
+
+
+
+
   const handleMouseUp = useCallback((event) => {
     if (
       event.target.id === "text-selection-button" ||
@@ -78,23 +101,13 @@ const Content = () => {
       setShowButton(false);
       addDicData(modalId);
       const currentTime = Date.now();
-      if (currentTime > expiresAt) {
-       const newAuthData = await refreshTokenHandler(refreshToken);
-        console.log('newAuthData', newAuthData);
-        chrome.storage.local.set({
-          accessToken: newAuthData.access_token,
-          refreshToken: newAuthData.refresh_token,
-          expiresAt: newAuthData.expiresAt 
-        });
-        window.postMessage({
-          type: "syncAuthData",
-          accessToken: newAuthData.access_token,
-          refreshToken: newAuthData.refresh_token,
-          expiresAt: newAuthData.expiresAt,
-        }, "http://localhost:3000");
-      }
+      // console.log("check time", new Date(currentTime), new Date(expiresAt), currentTime > expiresAt);
+      // console.log("expiresAt", expiresAt);
+      if (/*currentTime >*/ expiresAt*1000) {
+        fetchDataWithToken(modalId, selectedText, contextSentence);
+      } else {
       fetchData(modalId, selectedText, contextSentence);
-
+      }
       const initialX = modalPosition.x + 20; // offset from the logo button
       const initialY = Math.max(0, modalPosition.y - 170); // offset upward, but not beyond the top of the viewport
 

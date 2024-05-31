@@ -24,7 +24,8 @@
   },  
   "permissions": [
     "storage",
-    "offscreen"
+    "offscreen",
+    "https://dev-5gdulzrjlzzfplri.us.auth0.com/"
   ],
   "background": {
     "service_worker": "background.js"

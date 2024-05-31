@@ -19,6 +19,69 @@ const PopupComponent = () => {
       translateMode: !translateMode,
     });
   };
+
+  const refreshTokenHandler = async (refreshToken) => {
+    console.log('Attempt to refresh token');  // General log statement, avoid logging sensitive data
+    try {
+      const response = await fetch('https://dev-5gdulzrjlzzfplri.us.auth0.com/oauth/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          grant_type: 'refresh_token',
+          client_id: 'lSGPj0zEVKvepFST5aZPi0z0zbZGvlzR',  
+          refresh_token: refreshToken
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+      console.log('Token refreshed successfully', data);
+      const expiresAt = Date.now() + data.expires_in * 1000 - 1000;
+  
+      return {...data, expiresAt};
+    } catch (error) {
+      console.error('Failed to refresh token:', error);
+  
+    }
+  }
+
+  useEffect(() => {
+    // Check if the authentication state is already stored in local storage
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      console.log('Message received:', message);
+  
+      if (message.type === "REFRESH_TOKEN") {
+          console.log("Handling token refresh");
+          refreshTokenHandler(message.refreshToken).then(newAuthData => {
+              if (newAuthData) {
+                  chrome.storage.local.set({
+                      accessToken: newAuthData.access_token,
+                      refreshToken: newAuthData.refresh_token,
+                      expiresAt: newAuthData.expiresAt
+                  }, () => {
+                      console.log('Token data updated in storage', newAuthData);
+                      sendResponse({status: 'success', detail: 'Token refreshed.'});
+                  });
+              } else {
+                  sendResponse({status: 'error', detail: 'Failed to refresh token.'});
+              }
+          }).catch(error => {
+              console.error('Error in refreshing token:', error);
+              sendResponse({status: 'error', detail: error.message});
+          });
+          return true;  // Must return true when sendResponse will be called asynchronously
+      }
+    });
+  }
+  , []);
+
+
+
   useEffect(() => {
     // Check if the authentication state is already stored in local storage
     chrome.storage.local.get(null, function (result) {
