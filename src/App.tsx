@@ -51,34 +51,38 @@ const PopupComponent = () => {
   }
 
   useEffect(() => {
-    // Check if the authentication state is already stored in local storage
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    const messageListener = (message, sender, sendResponse) => {
       console.log('Message received:', message);
   
       if (message.type === "REFRESH_TOKEN") {
-          console.log("Handling token refresh");
-          refreshTokenHandler(message.refreshToken).then(newAuthData => {
-              if (newAuthData) {
-                  chrome.storage.local.set({
-                      accessToken: newAuthData.access_token,
-                      refreshToken: newAuthData.refresh_token,
-                      expiresAt: newAuthData.expiresAt
-                  }, () => {
-                      console.log('Token data updated in storage', newAuthData);
-                      sendResponse({status: 'success', detail: 'Token refreshed.'});
-                  });
-              } else {
-                  sendResponse({status: 'error', detail: 'Failed to refresh token.'});
-              }
-          }).catch(error => {
-              console.error('Error in refreshing token:', error);
-              sendResponse({status: 'error', detail: error.message});
-          });
-          return true;  // Must return true when sendResponse will be called asynchronously
+        console.log("Handling token refresh");
+        refreshTokenHandler(message.refreshToken).then(newAuthData => {
+          if (newAuthData) {
+            chrome.storage.local.set({
+              accessToken: newAuthData.access_token,
+              refreshToken: newAuthData.refresh_token,
+              expiresAt: newAuthData.expiresAt
+            }, () => {
+              console.log('Token data updated in storage', newAuthData);
+              sendResponse({status: 'success', detail: 'Token refreshed.'});
+            });
+          } else {
+            sendResponse({status: 'error', detail: 'Failed to refresh token.'});
+          }
+        }).catch(error => {
+          console.error('Error in refreshing token:', error);
+          sendResponse({status: 'error', detail: error.message});
+        });
+        return true;  // Indicating that sendResponse will be called asynchronously
       }
-    });
-  }
-  , []);
+    };
+  
+    chrome.runtime.onMessage.addListener(messageListener);
+    return () => {
+      chrome.runtime.onMessage.removeListener(messageListener);
+    };
+  }, [refreshTokenHandler]);  // Consider dependencies if necessary
+  
 
 
 
@@ -86,6 +90,7 @@ const PopupComponent = () => {
     // Check if the authentication state is already stored in local storage
     chrome.storage.local.get(null, function (result) {
       console.log("result", result);
+      console.log("time", new Date());
       SetIsLoggedin(result.isLoggedin);
       setTranslateMode(result.translateMode);
       setUser(result.user);

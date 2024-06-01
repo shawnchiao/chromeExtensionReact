@@ -1,6 +1,34 @@
 console.log('background.js');
 
+const refreshTokenHandler = async (refreshToken) => {
+  console.log('Attempt to refresh token');  // General log statement, avoid logging sensitive data
+  try {
+    const response = await fetch('https://dev-5gdulzrjlzzfplri.us.auth0.com/oauth/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        grant_type: 'refresh_token',
+        client_id: 'lSGPj0zEVKvepFST5aZPi0z0zbZGvlzR',  
+        refresh_token: refreshToken
+      }),
+    });
 
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('Token refreshed successfully', data);
+    const expiresAt = Date.now() + data.expires_in * 1000 - 1000;
+
+    return {...data, expiresAt};
+  } catch (error) {
+    console.error('Failed to refresh token:', error);
+
+  }
+}
 
 // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
@@ -94,6 +122,19 @@ if (message.type === "TOUCH_BASE") {
     console.log("Current storage state post-update:", result);
   });
 }
+ if (message.type === "CREATE_WINDOW") {
+  console.log("CREATE_WINDOW")
+  chrome.windows.create({
+    url: chrome.runtime.getURL("index.html"),
+    type: "popup",
+    width: 400,
+    height: 400
+});
+sendResponse({status: 'success', detail: 'Window created.'});
+return true;
+
+}
+
 // if (message.type === "REFRESH_TOKEN") {
 //   console.log("REFRESH_TOKEN")
 //   const newAuthData = await refreshTokenHandler(refreshToken);
@@ -105,6 +146,7 @@ if (message.type === "TOUCH_BASE") {
 //   });
 //   sendResponse({status: 'success', detail: 'Token refreshed.'});
 // }
+return true;
 });
 
 

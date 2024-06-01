@@ -31,22 +31,30 @@ const Content = () => {
 
 
     function fetchDataWithToken(modalId, selectedText, contextSentence) {
-      chrome.runtime.sendMessage({type: "REFRESH_TOKEN"}, response => {
-        console.log('response', response);
-          if (response.status === 'success') {
-              fetchData(modalId, selectedText, contextSentence);
-              window.postMessage({
-                type: "syncAuthData",
-                accessToken: newAuthData.access_token,
-                refreshToken: newAuthData.refresh_token,
-                expiresAt: newAuthData.expiresAt,
-              }, "http://localhost:3000");
-
-          } else {
-              console.error('Error fetching token:', response.error);
+      chrome.runtime.sendMessage({type:"CREATE_WINDOW"}, response => {
+        setTimeout(() => {
+          if (response && response.status === 'success') {
+            console.log("time to refresh token", new Date());
+            chrome.runtime.sendMessage({type: "REFRESH_TOKEN", refreshToken: refreshToken}, response => {
+              if (response && response.status === 'success') {
+                fetchData(modalId, selectedText, contextSentence);
+                window.postMessage({
+                  type: "syncAuthData",
+                  accessToken: newAuthData.access_token,
+                  refreshToken: newAuthData.refresh_token,
+                  expiresAt: newAuthData.expiresAt,
+                }, "http://localhost:3000");
+              } else if (response) {
+                console.error('Error fetching token:', response.error);
+              }
+            });
+          } else if (response) {
+            console.error('Error creating window:', response.error);
           }
+        }, 100);
+     
       });
-  }
+    }
   
 
 
