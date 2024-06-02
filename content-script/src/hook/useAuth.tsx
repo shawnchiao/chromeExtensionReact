@@ -32,8 +32,8 @@ export const useAuth = () => {
         chrome.storage.local.get(null, (result) => {
           window.postMessage({
             type: "syncAuthData",
-            accessToken: result.accessToken,
-            refreshToken: result.refreshToken,
+            access_token: result.accessToken,
+            refresh_token: result.refreshToken,
             expiresAt: result.expiresAt,
           }, "http://localhost:3000");
         });

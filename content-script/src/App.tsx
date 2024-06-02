@@ -9,7 +9,7 @@ import Dictionary from "./Dictionary/Dictionary";
 import { getFullSentence } from "./utils/textHelpers";
 import { useAuth } from "./hook/useAuth";
 import { useFetchDicData } from "./hook/useFetchDicData";
-import {refreshTokenHandler} from "./utils/refreshTokenHandler";
+import { refreshTokenHandler } from "./utils/refreshTokenHandler";
 const Content = () => {
   // Auth related states
   const { user, isLoggedin, refreshToken, accessToken, expiresAt } = useAuth();
@@ -29,36 +29,28 @@ const Content = () => {
   const { dicData, fetchData, abortFetch, addDicData, removeDicData } =
     useFetchDicData(accessToken);
 
-
-    function fetchDataWithToken(modalId, selectedText, contextSentence) {
-      chrome.runtime.sendMessage({type:"CREATE_WINDOW"}, response => {
-        setTimeout(() => {
-          if (response && response.status === 'success') {
-            console.log("time to refresh token", new Date());
-            chrome.runtime.sendMessage({type: "REFRESH_TOKEN", refreshToken: refreshToken}, response => {
-              if (response && response.status === 'success') {
-                fetchData(modalId, selectedText, contextSentence);
-                window.postMessage({
-                  type: "syncAuthData",
-                  accessToken: newAuthData.access_token,
-                  refreshToken: newAuthData.refresh_token,
-                  expiresAt: newAuthData.expiresAt,
-                }, "http://localhost:3000");
-              } else if (response) {
-                console.error('Error fetching token:', response.error);
-              }
-            });
-          } else if (response) {
-            console.error('Error creating window:', response.error);
-          }
-        }, 100);
-     
-      });
-    }
-  
-
-
-
+  function fetchDataWithToken(modalId, selectedText, contextSentence) {
+    chrome.runtime.sendMessage(
+      { type: "REFRESH_TOKEN", refreshToken: refreshToken },
+      (response) => {
+        console.log("response", response);
+        if (response && response.status === "success") {
+          fetchData(modalId, selectedText, contextSentence);
+          window.postMessage(
+            {
+              type: "syncAuthData",
+              access_token: response.accessToken,
+              refresh_token: response.refreshToken,
+              expiresAt: response.expiresAt,
+            },
+            "http://localhost:3000"
+          );
+        } else if (response) {
+          console.error("Error fetching token:", response.error);
+        }
+      }
+    );
+  }
 
   const handleMouseUp = useCallback((event) => {
     if (
@@ -85,7 +77,6 @@ const Content = () => {
     }
   }, []);
 
-
   const closeModal = useCallback(
     (modalId) => {
       console.log("clicking close button");
@@ -111,10 +102,10 @@ const Content = () => {
       const currentTime = Date.now();
       // console.log("check time", new Date(currentTime), new Date(expiresAt), currentTime > expiresAt);
       // console.log("expiresAt", expiresAt);
-      if (/*currentTime >*/ expiresAt*1000) {
+      if (/*currentTime >*/ expiresAt * 1000) {
         fetchDataWithToken(modalId, selectedText, contextSentence);
       } else {
-      fetchData(modalId, selectedText, contextSentence);
+        fetchData(modalId, selectedText, contextSentence);
       }
       const initialX = modalPosition.x + 20; // offset from the logo button
       const initialY = Math.max(0, modalPosition.y - 170); // offset upward, but not beyond the top of the viewport
@@ -123,7 +114,7 @@ const Content = () => {
       const constrainedX = Math.min(initialX, window.innerWidth - 370); // Assuming the modal width is 370px
       const constrainedPosition = {
         x: constrainedX,
-        y: initialY
+        y: initialY,
       };
 
       if (type === "modal") {
@@ -133,7 +124,7 @@ const Content = () => {
           const lastModal = modals[modals.length - 1];
           const newModalPosition = {
             x: Math.min(lastModal.position.x + 370, window.innerWidth - 370),
-            y: lastModal.position.y
+            y: lastModal.position.y,
           };
           setModals([...modals, { id: modalId, position: newModalPosition }]);
         }
@@ -143,7 +134,6 @@ const Content = () => {
     },
     [dicData, fetchData, modalPosition, modals, selectedText, contextSentence]
   );
-
 
   useEffect(() => {
     document.addEventListener("mouseup", handleMouseUp);
@@ -201,7 +191,7 @@ const Content = () => {
   }, [isDragging, onDrag, onDragEnd]);
 
   return (
-    <div style={{all:"initial"}}>
+    <div style={{ all: "initial" }}>
       {showButton && (
         <LogoButton
           onClick={() => handleButtonClick(showButton)}
@@ -223,7 +213,10 @@ const Content = () => {
               dicData[modal.id] &&
               dicData[modal.id].content &&
               dicData[modal.id].content[0]
-                ? {...JSON.parse(dicData[modal.id].content[0].text), audioData: dicData[modal.id].audioData}
+                ? {
+                    ...JSON.parse(dicData[modal.id].content[0].text),
+                    audioData: dicData[modal.id].audioData,
+                  }
                 : null
             }
           />
