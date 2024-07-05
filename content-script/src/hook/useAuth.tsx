@@ -16,7 +16,7 @@ export const useAuth = () => {
   useEffect(() => {
     const handleMessage = (event) => {
       if (event.origin !== "http://localhost:3000") return;
-
+      console.log("event.data from web app", event.data);
       if (event.data.type === "Auth0Login") {
         chrome.runtime.sendMessage({
           type: "LOGIN",

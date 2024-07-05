@@ -23,6 +23,7 @@
     "extension_pages": "script-src 'self'; object-src 'self'; media-src 'self' https://audio.oxforddictionaries.com https://en-public.s3.us-west-1.amazonaws.com;"
   },  
   "permissions": [
+    "action",
     "storage",
     "offscreen",
     "https://dev-5gdulzrjlzzfplri.us.auth0.com/"
@@ -34,7 +35,9 @@
     {
       "resources": [
         "offscreen.html",
-        "images/logoT.png"
+        "images/logoT.png",
+        "images/loading.png",
+        "images/clock.png"
       ],
       "matches": [
         "<all_urls>"
