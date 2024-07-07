@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from "react";
 import PlaySoundIcon from "../components/PlaySoundIcon";
+import Button from "../components/Button";
 function capitalizeFirstCharacter(str) {
   if (typeof str !== "string") {
     return ""; // Returns an empty string if the input is not a string
@@ -39,9 +40,12 @@ const containerStyle = {
 const phraseStyle = {
   fontSize: "24px",
   color: "#2a6496",
-  marginLeft: "10px",
   marginBottom: "15px",
   fontWeight: "bold",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: '1rem'
 };
 
 const sectionStyle = {
@@ -72,6 +76,9 @@ function WordNo({ data, isShowedTran }) {
   const definitionStyle = {
     textAlign: "left",
     fontWeight: "700",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
   };
 
   const exampleStyle = {
@@ -97,7 +104,11 @@ function WordNo({ data, isShowedTran }) {
   return (
     <div style={containerStyle}>
       <div style={{ paddingBottom: "20px" }}>
-        <div style={phraseStyle}>{capitalizeFirstCharacter(data.word)}</div>
+        <div style={phraseStyle}>{capitalizeFirstCharacter(data.word)}
+        <Button handleClick={() => console.log("clicked")} isSmall={true}
+          tooltip="Add a review plan using its general definition"
+          >+</Button>
+        </div>
         <div
           style={{
             ...regions,
@@ -107,6 +118,7 @@ function WordNo({ data, isShowedTran }) {
             gridTemplateColumns: "auto auto auto",
             alignItems: "center",
             columnGap: "1.3rem",
+            padding: "1rem",
           }}
         >
           {Object.entries(data.phoneticSymbols).map(([key, value]) => (
@@ -145,6 +157,9 @@ function WordNo({ data, isShowedTran }) {
                 )}
                 <div style={definitionStyle}>
                   {capitalizeFirstCharacter(def.definition)}
+                  <Button handleClick={() => console.log("clicked")} isSmall={true}
+                    tooltip="Add a review plan using this definition"
+                    >+</Button>
                 </div>
                 <div style={exampleStyle}>
                   {capitalizeFirstCharacter(def.example)}

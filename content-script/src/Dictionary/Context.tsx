@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from "react";
 import PlaySoundIcon from "../components/PlaySoundIcon";
+import Button from "../components/Button";
 function capitalizeFirstCharacter(str) {
   if (typeof str !== "string") {
     return ""; // Returns an empty string if the input is not a string
@@ -45,6 +46,10 @@ const lexicalItemDefinition = ({ dicData, isShowedTran }) => {
     fontSize: "24px",
     marginRight: "10px",
     marginBottom: "10px",
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
   };
 
   const smallInfoStyle = {
@@ -96,6 +101,7 @@ const lexicalItemDefinition = ({ dicData, isShowedTran }) => {
         <div style={wordContainerStyle}>
           <div style={lexicalItemStyle}>
             {capitalizeFirstCharacter(dicData.lexicalItem)}
+            <Button onClick={() => console.log("clicked")} tooltip="Add a review plan for this usage">Add</Button>
           </div>
         </div>
         <div

@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from "react";
 import PlaySoundIcon from "../components/PlaySoundIcon";
+import Button from "../components/Button";
 function capitalizeFirstCharacter(str) {
   if (typeof str !== "string") {
     return ""; // Returns an empty string if the input is not a string
@@ -32,8 +33,13 @@ const phraseStyle = {
   fontSize: '24px',
   color: '#2a6496',
   marginLeft: '10px',
+  marginRight: '10px',
   marginBottom: '15px',
-  fontWeight: 'bold'
+  fontWeight: 'bold',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: "2rem, 0"
 };
 
 const translationStyle = {
@@ -65,7 +71,10 @@ const contextItemStyle = {
 
 const contextLabelStyle = {
   fontWeight: 'bold',
-  marginBottom: '5px'
+  marginBottom: '5px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between'
 };
 
 const contextUsageStyle = {
@@ -116,7 +125,12 @@ function PhraseNo({ data, isShowedTran }) {
   console.log("data in PhraseNo", data);
   return (
     <div style={containerStyle}>
-      <div style={phraseStyle}>{data.phrase}</div>
+      <div style={phraseStyle}>{data.phrase}
+      <Button handleClick={() => console.log("clicked")} isSmall={true}
+        tooltip="Add a review plan using general context of this phrase"
+        >+</Button>
+
+      </div>
       {isShowedTran && <div style={translationStyle}>{data.translation}</div>}
 
       <div style={sectionStyle}>
@@ -169,7 +183,11 @@ function PhraseNo({ data, isShowedTran }) {
         <div style={titleStyle}>Usage in Context</div>
         {data.contexts.map((context, index) => (
           <div key={index} style={contextItemStyle}>
-            <div style={contextLabelStyle}>{context.context}</div>
+            <div style={contextLabelStyle}>{context.context}
+            <Button handleClick={() => console.log("clicked")} isSmall={true}
+              tooltip="Add a review plan using this context"
+              >+</Button>
+            </div>
             <div style={contextUsageStyle}>{context.usage}</div>
           </div>
         ))}

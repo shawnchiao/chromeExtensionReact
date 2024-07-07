@@ -2,6 +2,7 @@
 import React from "react";
 import "./phraseCo.css";
 import PlaySoundIcon from "../components/PlaySoundIcon";
+import Button from "../components/Button";
 function capitalizeFirstCharacter(str) {
   if (typeof str !== "string") {
     return ""; // Returns an empty string if the input is not a string
@@ -34,7 +35,10 @@ const phraseStyles = {
   // marginLeft: '10px',
   // marginBottom: '15px',
   margin: '4%',
-  fontWeight: 'bold'
+  fontWeight: 'bold',
+  display: "flex",
+  flexDirection: "column",
+  gap: "1rem",
 };
 
 const translationStyles = {
@@ -52,9 +56,12 @@ const sectionStyles = {
 };
 
 const titleStyles = {
+  display:'flex',
+  justifyContent:'space-between',
   fontWeight: 'bold',
   color: '#333',
-  marginBottom: '10px'
+  marginBottom: '10px',
+  alignItems: 'center'
 };
 
 const distilledStyles = {
@@ -87,7 +94,10 @@ function Sentence({ data, isShowedTran }) {
   console.log("data in sentence", data);
   return (
     <div style={containerStyles}>
-      <div style={phraseStyles}>{data.sentence}</div>
+      <div style={phraseStyles}>
+        {data.sentence}
+        <Button handleClick={() => console.log("clicked")} isSmall={true} tooltip="Add a review plan using the whole sentence">+</Button>
+        </div>
       <div
           style={{
             ...regions,
@@ -121,7 +131,9 @@ function Sentence({ data, isShowedTran }) {
         <div style={titleStyles}>Thought Groups</div>
         {data.thoughtGroups.map((group, index) => (
           <div key={index} style={contextItemStyles}>
-            <div style={titleStyles}>{group.text}</div>
+            <div style={titleStyles}>{group.text}
+            <Button handleClick={() => console.log("clicked")} isSmall={true} tooltip="Add a review plan of this segmant">+</Button>
+            </div>
             <div>{group.explanation}</div>
           </div>
         ))}
@@ -131,7 +143,9 @@ function Sentence({ data, isShowedTran }) {
         <div style={titleStyles}>Distilled Expressions</div>
         {data.distilledExpressions.map((expression, index) => (
           <div key={index} style={distilledStyles}>
-            <div style={titleStyles}>{expression.expression}</div>
+            <div style={titleStyles}>{expression.expression}
+            <Button handleClick={() => console.log("clicked")} isSmall={true}  tooltip="Add a review plan of this expression">+</Button>
+            </div>
             <div>{expression.definition}</div>
           </div>
         ))}
