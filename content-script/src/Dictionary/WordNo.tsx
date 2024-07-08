@@ -45,7 +45,7 @@ const phraseStyle = {
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  padding: '1rem'
+  padding: "1rem",
 };
 
 const sectionStyle = {
@@ -97,17 +97,22 @@ function WordNo({ data, isShowedTran }) {
     gap: "10px",
   };
   const keyMapping = {
-    "american": "US",
-    "british": "UK",
-    "australian": "AU"
-  }
+    american: "US",
+    british: "UK",
+    australian: "AU",
+  };
   return (
     <div style={containerStyle}>
       <div style={{ paddingBottom: "20px" }}>
-        <div style={phraseStyle}>{capitalizeFirstCharacter(data.word)}
-        <Button handleClick={() => console.log("clicked")} isSmall={true}
-          tooltip="Add a review plan using its general definition"
-          >+</Button>
+        <div style={phraseStyle}>
+          {capitalizeFirstCharacter(data.word)}
+          <Button
+            payload={{ lexicalItem: data.word, definition: "General Mode" }}
+            isSmall={true}
+            tooltip="Add a review plan using its general definition"
+          >
+            +
+          </Button>
         </div>
         <div
           style={{
@@ -129,10 +134,12 @@ function WordNo({ data, isShowedTran }) {
                 {key === "australian" && "AU"}:
               </span>
               {/* <div style={{ display: "flex", alignItems: "center", justifySelf: "center", gap:"auto" }}> */}
-                <span style={{ justifySelf: "right" }}>{value}</span>
-                <PlaySoundIcon style={{ marginLeft: "-4px" }} size="24px"
-                  url={data.audioData[keyMapping[key]][0]}
-                />
+              <span style={{ justifySelf: "right" }}>{value}</span>
+              <PlaySoundIcon
+                style={{ marginLeft: "-4px" }}
+                size="24px"
+                url={data.audioData[keyMapping[key]][0]}
+              />
               {/* </div> */}
             </React.Fragment>
           ))}
@@ -157,9 +164,16 @@ function WordNo({ data, isShowedTran }) {
                 )}
                 <div style={definitionStyle}>
                   {capitalizeFirstCharacter(def.definition)}
-                  <Button handleClick={() => console.log("clicked")} isSmall={true}
+                  <Button
+                    payload={{
+                      lexicalItem: data.word,
+                      definition: def.definition,
+                    }}
+                    isSmall={true}
                     tooltip="Add a review plan using this definition"
-                    >+</Button>
+                  >
+                    +
+                  </Button>
                 </div>
                 <div style={exampleStyle}>
                   {capitalizeFirstCharacter(def.example)}

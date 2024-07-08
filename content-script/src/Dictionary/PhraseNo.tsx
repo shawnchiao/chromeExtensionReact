@@ -14,99 +14,99 @@ function capitalizeFirstCharacter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 const keyMapping = {
-  "american": "US",
-  "british": "UK",
-  "australian": "AU"
+  american: "US",
+  british: "UK",
+  australian: "AU",
 };
 // Define the style objects
 const containerStyle = {
-  maxWidth: '350px',
-  margin: '20px auto',
-  padding: '20px 0',
-  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-  borderRadius: '8px',
-  backgroundColor: '#f9f9f9',
-  fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`
+  maxWidth: "350px",
+  margin: "20px auto",
+  padding: "20px 0",
+  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+  borderRadius: "8px",
+  backgroundColor: "#f9f9f9",
+  fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif`,
 };
 
 const phraseStyle = {
-  fontSize: '24px',
-  color: '#2a6496',
-  marginLeft: '10px',
-  marginRight: '10px',
-  marginBottom: '15px',
-  fontWeight: 'bold',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  padding: "2rem, 0"
+  fontSize: "24px",
+  color: "#2a6496",
+  marginLeft: "10px",
+  marginRight: "10px",
+  marginBottom: "15px",
+  fontWeight: "bold",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "2rem, 0",
 };
 
 const translationStyle = {
-  fontSize: '15px',
-  color: 'rgb(82, 86, 90)',
-  marginLeft: '12px',
-  marginBottom: '15px'
+  fontSize: "15px",
+  color: "rgb(82, 86, 90)",
+  marginLeft: "12px",
+  marginBottom: "15px",
 };
 
 const sectionStyle = {
-  backgroundColor: '#fff',
-  padding: '15px',
-  borderRadius: '0px',
-  marginBottom: '20px'
+  backgroundColor: "#fff",
+  padding: "15px",
+  borderRadius: "0px",
+  marginBottom: "20px",
 };
 
 const titleStyle = {
-  fontWeight: 'bold',
-  color: '#333',
-  marginBottom: '10px'
+  fontWeight: "bold",
+  color: "#333",
+  marginBottom: "10px",
 };
 
 const contextItemStyle = {
-  marginBottom: '10px',
-  padding: '10px',
-  borderRadius: '15px',
-  backgroundColor: '#ecf0f1'
+  marginBottom: "10px",
+  padding: "10px",
+  borderRadius: "15px",
+  backgroundColor: "#ecf0f1",
 };
 
 const contextLabelStyle = {
-  fontWeight: 'bold',
-  marginBottom: '5px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between'
+  fontWeight: "bold",
+  marginBottom: "5px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
 };
 
 const contextUsageStyle = {
-  fontStyle: 'italic'
+  fontStyle: "italic",
 };
 
 const listStyle = {
-  listStyleType: 'none',
-  padding: '0'
+  listStyleType: "none",
+  padding: "0",
 };
 
 const listItemStyle = {
-  marginBottom: '5px'
+  marginBottom: "5px",
 };
 
 const noteStyle = {
-  fontStyle: 'italic',
-  marginTop: '20px',
-  backgroundColor: '#e6f7ff',
-  padding: '10px',
-  borderRadius: '0px',
-  lineHeight: '1.2'
+  fontStyle: "italic",
+  marginTop: "20px",
+  backgroundColor: "#e6f7ff",
+  padding: "10px",
+  borderRadius: "0px",
+  lineHeight: "1.2",
 };
 
 const frequencyStyle = {
-  display: 'flex',
-  justifyContent: 'space-between'
+  display: "flex",
+  justifyContent: "space-between",
 };
 
 const synonymAntonymRowStyle = {
-  display: 'flex',
-  justifyContent: 'space-around'
+  display: "flex",
+  justifyContent: "space-around",
 };
 const regions = {
   fontSize: "14px",
@@ -125,11 +125,15 @@ function PhraseNo({ data, isShowedTran }) {
   console.log("data in PhraseNo", data);
   return (
     <div style={containerStyle}>
-      <div style={phraseStyle}>{data.phrase}
-      <Button handleClick={() => console.log("clicked")} isSmall={true}
-        tooltip="Add a review plan using general context of this phrase"
-        >+</Button>
-
+      <div style={phraseStyle}>
+        {data.phrase}
+        <Button
+          payload={{ lexicalItem: data.phrase, definition: "General Mode" }}
+          isSmall={true}
+          tooltip="Add a review plan using general context of this phrase"
+        >
+          +
+        </Button>
       </div>
       {isShowedTran && <div style={translationStyle}>{data.translation}</div>}
 
@@ -149,7 +153,7 @@ function PhraseNo({ data, isShowedTran }) {
             );
           })}
         </div> */}
-         <div
+        <div
           style={{
             ...regions,
             display: "grid",
@@ -167,10 +171,12 @@ function PhraseNo({ data, isShowedTran }) {
                 {key === "australian" && "AU"}:
               </span>
               {/* <div style={{ display: "flex", alignItems: "center", justifySelf: "center", gap:"auto" }}> */}
-               
-                <PlaySoundIcon style={{ justifySelf: "center" }} size="24px"
-                  url={data.audioData[keyMapping[key]][0]}
-                />
+
+              <PlaySoundIcon
+                style={{ justifySelf: "center" }}
+                size="24px"
+                url={data.audioData[keyMapping[key]][0]}
+              />
               {/* </div> */}
               <span style={{ justifySelf: "left" }}>
                 {data.regionAndFrequency[key]}/10
@@ -183,10 +189,11 @@ function PhraseNo({ data, isShowedTran }) {
         <div style={titleStyle}>Usage in Context</div>
         {data.contexts.map((context, index) => (
           <div key={index} style={contextItemStyle}>
-            <div style={contextLabelStyle}>{context.context}
-            <Button handleClick={() => console.log("clicked")} isSmall={true}
+            <div style={contextLabelStyle}>
+              {context.context}
+              {/* <Button handleClick={() => console.log("clicked")} isSmall={true}
               tooltip="Add a review plan using this context"
-              >+</Button>
+              >+</Button> */}
             </div>
             <div style={contextUsageStyle}>{context.usage}</div>
           </div>

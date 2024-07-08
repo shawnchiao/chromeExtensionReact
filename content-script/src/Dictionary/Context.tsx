@@ -15,9 +15,9 @@ function capitalizeFirstCharacter(str) {
 }
 
 const keyMapping = {
-  "american": "US",
-  "british": "UK",
-  "australian": "AU"
+  american: "US",
+  british: "UK",
+  australian: "AU",
 };
 
 const lexicalItemDefinition = ({ dicData, isShowedTran }) => {
@@ -101,7 +101,15 @@ const lexicalItemDefinition = ({ dicData, isShowedTran }) => {
         <div style={wordContainerStyle}>
           <div style={lexicalItemStyle}>
             {capitalizeFirstCharacter(dicData.lexicalItem)}
-            <Button onClick={() => console.log("clicked")} tooltip="Add a review plan for this usage">Add</Button>
+            <Button
+              tooltip="Add a review plan for this usage"
+              payload={{
+                lexicalItem: dicData.lexicalItem,
+                definition: dicData.meaning,
+              }}
+            >
+              Add
+            </Button>
           </div>
         </div>
         <div
@@ -162,10 +170,12 @@ const lexicalItemDefinition = ({ dicData, isShowedTran }) => {
                 {key === "australian" && "AU"}:
               </span>
               {/* <div style={{ display: "flex", alignItems: "center", justifySelf: "center", gap:"auto" }}> */}
-                <span style={{ justifySelf: "right" }}>{value}</span>
-                <PlaySoundIcon style={{ marginLeft: "-4px" }} size="24px"
-                  url={dicData.audioData[keyMapping[key]][0]}
-                />
+              <span style={{ justifySelf: "right" }}>{value}</span>
+              <PlaySoundIcon
+                style={{ marginLeft: "-4px" }}
+                size="24px"
+                url={dicData.audioData[keyMapping[key]][0]}
+              />
               {/* </div> */}
               <span style={{ justifySelf: "left" }}>
                 {dicData.regionAndFrequency[key]}/10

@@ -34,6 +34,46 @@ const refreshTokenHandler = async (refreshToken) => {
   }
 };
 
+const addUsageHandler = async (lexicalItem, definition) => {
+  try {
+    const result = await new Promise((resolve, reject) => {
+      chrome.storage.local.get('accessToken', (result) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+
+    const response = await fetch(
+      "https://5qspuywt86.execute-api.us-west-1.amazonaws.com/Prod/extension-add-usage",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${result.accessToken}`
+        },
+        body: JSON.stringify({
+          lexicalItem,
+          definition,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 //     // if (message.type === 'AUTH_STATE_CHANGED') {
@@ -156,22 +196,29 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         refreshToken: newAuthData.refresh_token,
         expiresAt: newAuthData.expiresAt,
       });
-      sendResponse({ status: "success",  accessToken: newAuthData.access_token,
-      refreshToken: newAuthData.refresh_token,
-      expiresAt: newAuthData.expiresAt });
+      sendResponse({
+        status: "success",
+        accessToken: newAuthData.access_token,
+        refreshToken: newAuthData.refresh_token,
+        expiresAt: newAuthData.expiresAt,
+      });
     });
     return true;
   }
 
-
+  
+  if (message.type === "ADD_USAGE") {
+    console.log("ADD_USAGE");
+    addUsageHandler(message.lexicalItem, message.definition).then((result) => {
+      console.log("result from addUsageHandler", result);
+    }).catch((error) => {
+      console.error("Error:", error);
+    }); 
+    return true;
+  }
 
 
 });
-
-
-
-
-
 
 // const frames = [
 //   'images/logoT.png',
@@ -195,7 +242,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // async function updateIcon() {
 //   const framePath = frames[currentFrame];
 //   console.log('Attempting to set icon:', framePath);
-  
+
 //   try {
 //     const imageData = await getImageData(framePath);
 //     chrome.action.setIcon({ imageData: imageData }, () => {

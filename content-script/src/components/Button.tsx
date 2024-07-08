@@ -26,7 +26,7 @@ const Tooltip: React.FC<TooltipProps> = ({ content, children }) => {
   }, []);
 
   const tooltipStyle: React.CSSProperties = {
-    width:"4.5rem",
+    width: "4.5rem",
     position: "absolute",
     bottom: "calc(100% + 5px)", // Changed from top to bottom
     left: "50%",
@@ -57,17 +57,19 @@ const Tooltip: React.FC<TooltipProps> = ({ content, children }) => {
 };
 
 interface ButtonProps {
-  handleClick: () => void;
+  onclick?: () => void;
   isSmall?: boolean;
   children: string;
   tooltip?: string;
+  payload?: { lexicalItem: string; definition: string };
 }
 
 const Button: React.FC<ButtonProps> = ({
-  handleClick,
+  onclick,
   isSmall = false,
   children,
   tooltip,
+  payload,
 }) => {
   const [isPressed, setIsPressed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -89,6 +91,18 @@ const Button: React.FC<ButtonProps> = ({
     padding: isSmall ? "0.9rem 0.9rem" : "0.5rem 1rem",
     cursor: "pointer",
     transform: isPressed ? "scale(0.9)" : "scale(1)",
+  };
+
+  const handleClick = async () => {
+    if (onclick) {
+      onclick();
+    } else {
+      chrome.runtime.sendMessage({
+        type: "ADD_USAGE",
+        lexicalItem: payload?.lexicalItem,
+        definition: payload?.definition,
+      });
+    }
   };
 
   const buttonElement = (
