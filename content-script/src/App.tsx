@@ -10,6 +10,7 @@ import { getFullSentence } from "./utils/textHelpers";
 import { useAuth } from "./hook/useAuth";
 import { useFetchDicData } from "./hook/useFetchDicData";
 import { refreshTokenHandler } from "./utils/refreshTokenHandler";
+import FetchStackDisplay from "./components/FetchStackDisplay";
 const Content = () => {
   // Auth related states
   const { user, isLoggedin, refreshToken, accessToken, expiresAt } = useAuth();
@@ -28,6 +29,29 @@ const Content = () => {
   // Data fetching related states
   const { dicData, fetchData, abortFetch, addDicData, removeDicData } =
     useFetchDicData(accessToken);
+    const [fetchStack, setFetchStack] = useState([]);
+
+
+    useEffect(() => {
+      const fetchStackListener = (message) => {
+        if (message.type === "UPDATE_FETCH_STACK") {
+          setFetchStack(message.fetchStack);
+        }
+      };
+  
+      chrome.runtime.onMessage.addListener(fetchStackListener);
+  
+      // Initial fetch of the stack
+      chrome.runtime.sendMessage({type: "GET_FETCH_STACK"}, (response) => {
+        if (response && response.fetchStack) {
+          setFetchStack(response.fetchStack);
+        }
+      });
+  
+      return () => {
+        chrome.runtime.onMessage.removeListener(fetchStackListener);
+      };
+    }, []);
 
   function fetchDataWithToken(modalId, selectedText, contextSentence) {
     chrome.runtime.sendMessage(
@@ -192,6 +216,7 @@ const Content = () => {
 
   return (
     <div style={{ all: "initial" }}>
+       <FetchStackDisplay fetchStack={fetchStack} />
       {showButton && (
         <LogoButton
           onClick={() => handleButtonClick(showButton)}

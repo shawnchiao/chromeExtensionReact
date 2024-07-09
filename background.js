@@ -34,7 +34,13 @@ const refreshTokenHandler = async (refreshToken) => {
   }
 };
 
+let fetchStack = [];
+
 const addUsageHandler = async (lexicalItem, definition) => {
+  const fetchId = Date.now().toString();
+  fetchStack.push({ id: fetchId, lexicalItem, status: 'processing' });
+  updateFetchStack();
+
   try {
     const result = await new Promise((resolve, reject) => {
       chrome.storage.local.get('accessToken', (result) => {
@@ -66,13 +72,50 @@ const addUsageHandler = async (lexicalItem, definition) => {
     }
 
     const data = await response.json();
+    
+    // Update fetch stack
+    fetchStack = fetchStack.map(item => 
+      item.id === fetchId ? { ...item, status: 'completed' } : item
+    );
+    updateFetchStack();
+
+    // Remove completed item after a delay
+    setTimeout(() => {
+      fetchStack = fetchStack.filter(item => item.id !== fetchId);
+      updateFetchStack();
+    }, 3000);
+
     return data;
 
   } catch (error) {
     console.error("Error:", error);
+    
+    // Update fetch stack with error status
+    fetchStack = fetchStack.map(item => 
+      item.id === fetchId ? { ...item, status: 'error' } : item
+    );
+    updateFetchStack();
+
+    // Remove error item after a delay
+    setTimeout(() => {
+      fetchStack = fetchStack.filter(item => item.id !== fetchId);
+      updateFetchStack();
+    }, 3000);
+
     throw error;
   }
 };
+
+function updateFetchStack() {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    if (tabs[0]) {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        type: "UPDATE_FETCH_STACK",
+        fetchStack: fetchStack
+      });
+    }
+  });
+}
 
 // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
@@ -219,6 +262,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
+
+  if (message.type === "GET_FETCH_STACK") {
+    sendResponse({fetchStack: fetchStack});
+    return true;
+  }
 
 });
 
