@@ -209,8 +209,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   
   if (message.type === "ADD_USAGE") {
     console.log("ADD_USAGE");
+    startAnimation();
     addUsageHandler(message.lexicalItem, message.definition).then((result) => {
       console.log("result from addUsageHandler", result);
+      stopAnimation();
     }).catch((error) => {
       console.error("Error:", error);
     }); 
@@ -220,96 +222,96 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 });
 
-// const frames = [
-//   'images/logoT.png',
-//   'images/loading.png',
-//   'images/clock.png'
-// ];
+const frames = [
+  'images/logoT.png',
+  'images/loading.png',
+  'images/clock.png'
+];
 
-// let currentFrame = 0;
-// let intervalId = null;
+let currentFrame = 0;
+let intervalId = null;
 
-// async function getImageData(url, size = 128) {
-//   const response = await fetch(chrome.runtime.getURL(url));
-//   const blob = await response.blob();
-//   const bitmap = await createImageBitmap(blob);
-//   const canvas = new OffscreenCanvas(size, size);
-//   const ctx = canvas.getContext('2d');
-//   ctx.drawImage(bitmap, 0, 0, size, size);
-//   return ctx.getImageData(0, 0, size, size);
-// }
+async function getImageData(url, size = 128) {
+  const response = await fetch(chrome.runtime.getURL(url));
+  const blob = await response.blob();
+  const bitmap = await createImageBitmap(blob);
+  const canvas = new OffscreenCanvas(size, size);
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(bitmap, 0, 0, size, size);
+  return ctx.getImageData(0, 0, size, size);
+}
 
-// async function updateIcon() {
-//   const framePath = frames[currentFrame];
-//   console.log('Attempting to set icon:', framePath);
+async function updateIcon() {
+  const framePath = frames[currentFrame];
+  console.log('Attempting to set icon:', framePath);
 
-//   try {
-//     const imageData = await getImageData(framePath);
-//     chrome.action.setIcon({ imageData: imageData }, () => {
-//       if (chrome.runtime.lastError) {
-//         console.error('Error setting icon:', chrome.runtime.lastError.message);
-//         stopAnimation();
-//         return;
-//       }
-//       console.log('Icon set successfully:', framePath);
-//       currentFrame = (currentFrame + 1) % frames.length;
-//     });
-//   } catch (error) {
-//     console.error('Error processing image:', error);
-//     stopAnimation();
-//   }
-// }
+  try {
+    const imageData = await getImageData(framePath);
+    chrome.action.setIcon({ imageData: imageData }, () => {
+      if (chrome.runtime.lastError) {
+        console.error('Error setting icon:', chrome.runtime.lastError.message);
+        stopAnimation();
+        return;
+      }
+      console.log('Icon set successfully:', framePath);
+      currentFrame = (currentFrame + 1) % frames.length;
+    });
+  } catch (error) {
+    console.error('Error processing image:', error);
+    stopAnimation();
+  }
+}
 
-// function startAnimation() {
-//   if (intervalId === null) {
-//     console.log('Starting animation');
-//     intervalId = setInterval(updateIcon, 1000); // Change frame every 1 second
-//   }
-// }
+function startAnimation() {
+  if (intervalId === null) {
+    console.log('Starting animation');
+    intervalId = setInterval(updateIcon, 1000); // Change frame every 1 second
+  }
+}
 
-// function stopAnimation() {
-//   if (intervalId !== null) {
-//     console.log('Stopping animation');
-//     clearInterval(intervalId);
-//     intervalId = null;
-//     chrome.action.setIcon({ path: frames[0] });
-//   }
-// }
+async function stopAnimation() {
+  if (intervalId !== null) {
+    console.log('Stopping animation');
+    clearInterval(intervalId);
+    intervalId = null;
+    const imageData = await getImageData(frames[0]);
+    chrome.action.setIcon({ imageData: imageData });
+  }
+}
+// Log available resources and their URLs
+console.log('Available resources:', chrome.runtime.getManifest().web_accessible_resources);
+frames.forEach(frame => {
+  console.log(`URL for ${frame}:`, chrome.runtime.getURL(frame));
+});
 
-// // Log available resources and their URLs
-// console.log('Available resources:', chrome.runtime.getManifest().web_accessible_resources);
-// frames.forEach(frame => {
-//   console.log(`URL for ${frame}:`, chrome.runtime.getURL(frame));
-// });
-
-// // Start animation immediately for testing
+// Start animation immediately for testing
 // startAnimation();
 
-// chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-//   if (request.action === 'startFetching') {
-//     startAnimation();
-//   } else if (request.action === 'stopFetching') {
-//     stopAnimation();
-//   }
-// });
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'startFetching') {
+    startAnimation();
+  } else if (request.action === 'stopFetching') {
+    stopAnimation();
+  }
+});
 
-// // Additional debugging
-// frames.forEach(frame => {
-//   fetch(chrome.runtime.getURL(frame))
-//     .then(response => {
-//       console.log(`${frame} exists:`, response.ok);
-//       if (response.ok) {
-//         return response.blob();
-//       } else {
-//         throw new Error(`Failed to fetch ${frame}`);
-//       }
-//     })
-//     .then(blob => {
-//       console.log(`${frame} size:`, blob.size);
-//       return createImageBitmap(blob);
-//     })
-//     .then(imageBitmap => {
-//       console.log(`${frame} dimensions:`, imageBitmap.width, 'x', imageBitmap.height);
-//     })
-//     .catch(error => console.error(`Error processing ${frame}:`, error));
-// });
+// Additional debugging
+frames.forEach(frame => {
+  fetch(chrome.runtime.getURL(frame))
+    .then(response => {
+      console.log(`${frame} exists:`, response.ok);
+      if (response.ok) {
+        return response.blob();
+      } else {
+        throw new Error(`Failed to fetch ${frame}`);
+      }
+    })
+    .then(blob => {
+      console.log(`${frame} size:`, blob.size);
+      return createImageBitmap(blob);
+    })
+    .then(imageBitmap => {
+      console.log(`${frame} dimensions:`, imageBitmap.width, 'x', imageBitmap.height);
+    })
+    .catch(error => console.error(`Error processing ${frame}:`, error));
+});
