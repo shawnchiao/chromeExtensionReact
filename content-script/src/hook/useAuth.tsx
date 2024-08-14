@@ -27,7 +27,7 @@ export const useAuth = () => {
           user: event.data.user,
         });
       }
-
+      console.log("event.data from web app", event.data);
       if (event.data.type === "touchBase") {
         chrome.storage.local.get(null, (result) => {
           window.postMessage({

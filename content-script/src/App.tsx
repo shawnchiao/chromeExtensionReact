@@ -100,7 +100,7 @@ const Content = () => {
       setShowButton(false);
     }
   }, []);
-
+   console.log("contextSentence", contextSentence);
   const closeModal = useCallback(
     (modalId) => {
       console.log("clicking close button");

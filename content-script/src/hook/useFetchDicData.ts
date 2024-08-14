@@ -22,6 +22,7 @@ export const useFetchDicData = (token) => {
 
       console.log("translateInto", translateInto);
       try {
+        console.time("fetch Dic Data from API");
         const response = await fetch(
           `https://5qspuywt86.execute-api.us-west-1.amazonaws.com/Prod/get-dic-data-for-extension`,
           {
@@ -39,6 +40,7 @@ export const useFetchDicData = (token) => {
             signal: controller.signal,
           }
         );
+        console.timeEnd("fetch Dic Data from API");
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
